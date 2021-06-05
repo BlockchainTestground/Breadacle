@@ -1,53 +1,49 @@
-var ERC20_token_address = "0x28092De136685a45F09B5B420C0d225b9EC1E636"
-var contract
-var erc_contract
-var accounts
-var web3
+import Phaser from "phaser";
+import dragonBones from "./external/dragonBones";
+import {roll} from "./blockchain/contract_interaction";
+import logoImg from "./assets/logo.png";
 
-const updateDice = async () => {
-  console.log("Polling dice state...")
-  previous_dice_result = await contract.methods.msgSenderToResult(accounts[0]).call()
-  setDice(parseInt(previous_dice_result))
-  console.log("Polled! Dice state: " + previous_dice_result)
+const config = {
+  type: Phaser.AUTO,
+  parent: "phaser-example",
+  width: 800,
+  height: 600,
+  plugins: {
+    scene: [
+      { key: "DragonBones", plugin: dragonBones.phaser.plugin.DragonBonesScenePlugin, mapping: "dragonbone" } // setup DB plugin
+    ]
+  },
+  scene: {
+    preload: preload,
+    create: create
+  }
 };
 
-const roll = async () => {
-  var random_seed = "1234"
-  await contract.methods
-    .roll(random_seed)
-    .send({ from: accounts[0], gas: 400000 })
-  updateDice()
+const game = new Phaser.Game(config);
+var button
+
+function preload() {
+  this.load.image("logo", logoImg);
+  this.load.image('button', './src/assets/button.png');
+
+  this.load.dragonbone(
+      "x",
+      "src/assets/NewProject_tex.png",
+      "src/assets/NewProject_tex.json",
+      "src/assets/NewProject_ske.json",
+  );
 }
 
+function create() {
 
-const approve = async () => {
-  var approval_value = "1000000000000000000000"
-  await erc_contract.methods
-    .approve(ERC20_token_address, approval_value)
-    .send({ from: accounts[0], gas: 400000 })
-  updateDice()
+  const arm = this.add.armature("Armature", "x");
+  arm.x = 400;
+  arm.y = 300;
+  arm.animation.play("animtion0");
+
+  this.approveBtn = this.add.sprite(600, 500, 'button').setInteractive();
+  this.approveBtn.on('pointerdown', function (event) {
+    roll("123","1")
+  });
+
 }
-
-async function maticDiceGameApp() {
-  var awaitWeb3 = async function() {
-    web3 = await getWeb3();
-    var awaitContract = async function() {
-      contract = await getGameContract(web3)
-      var awaitERCContract = async function() {
-        erc_contract = await getMyERC20Contract(web3)
-        var awaitAccounts = async function() {
-          accounts = await web3.eth.getAccounts()
-          updateDice()
-        }
-        awaitAccounts()
-      }
-      awaitERCContract()
-    }
-    awaitContract()
-  }
-  awaitWeb3()
-}
-maticDiceGameApp()
-
-
-var display_click_count_poller = setInterval(updateDice,1000)
