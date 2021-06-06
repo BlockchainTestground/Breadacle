@@ -1,7 +1,7 @@
 import {getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei} from './utils.js';
 
-//var NETWORK_ID = 80001 //Mumbai
-const NETWORK_ID = 137 //Matic
+var NETWORK_ID = 80001 //Mumbai
+//const NETWORK_ID = 137 //Matic
 var contract
 var accounts
 var balance

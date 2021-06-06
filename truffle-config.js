@@ -47,7 +47,7 @@ module.exports = {
     // options below to some value.
     //
     mumbai: {
-      provider: () => new HDWalletProvider(mnemonic, `https://polygon-mumbai.infura.io/v3/a3e70735b4cf401b9148e1fea8f5a288`),
+      provider: () => new HDWalletProvider(mnemonic, `https://rpc-mumbai.maticvigil.com`),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,
