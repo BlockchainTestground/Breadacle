@@ -1,6 +1,6 @@
 
-const TestgroundGame = artifacts.require("TestgroundGame");
+const DiceGame = artifacts.require("DiceGame");
 
 module.exports = function (deployer) {
-  deployer.deploy(TestgroundGame);
+  deployer.deploy(DiceGame);
 };

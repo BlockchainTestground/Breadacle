@@ -47,11 +47,12 @@ module.exports = {
     // options below to some value.
     //
     mumbai: {
-      provider: () => new HDWalletProvider(mnemonic, `https://rpc-mumbai.matic.today`),
+      provider: () => new HDWalletProvider(mnemonic, `https://polygon-mumbai.infura.io/v3/a3e70735b4cf401b9148e1fea8f5a288`),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,
-      skipDryRun: true
+      skipDryRun: false,
+      networkCheckTimeout: 999,
     },
     matic: {
       provider: () => new HDWalletProvider(mnemonic, `https://rpc-mainnet.maticvigil.com`),
@@ -100,7 +101,7 @@ module.exports = {
   // Configure your compilers
   compilers: {
     solc: {
-       version: "0.8.0",    // Fetch exact version from solc-bin (default: truffle's version)
+       version: "0.8.4",    // Fetch exact version from solc-bin (default: truffle's version)
       // docker: true,        // Use "0.5.1" you've installed locally with docker (default: false)
       // settings: {          // See the solidity docs for advice about optimization and evmVersion
       //  optimizer: {

@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
-import {roll} from "./blockchain/contract_interaction";
+import { roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance } from "./blockchain/contract_interaction";
 import logoImg from "./assets/logo.png";
 
 const config = {
@@ -28,9 +28,9 @@ function preload() {
 
   this.load.dragonbone(
       "x",
-      "src/assets/NewProject_tex.png",
-      "src/assets/NewProject_tex.json",
-      "src/assets/NewProject_ske.json",
+      "src/assets/Bread_tex.png",
+      "src/assets/Bread_tex.json",
+      "src/assets/Bread_ske.json",
   );
 }
 
@@ -43,7 +43,36 @@ function create() {
 
   this.approveBtn = this.add.sprite(600, 500, 'button').setInteractive();
   this.approveBtn.on('pointerdown', function (event) {
-    roll("123","1")
+    //roll("123","1")
+    getPlayerStatus((status) => {
+      console.log(status)
+    });
+
+    getPlayerRequestId((request_id) => {
+      console.log(request_id)
+    });
   });
 
 }
+
+function poll() {
+  console.log("polling...")
+  getPlayerStatus((status) => {
+    console.log("Status: " + status)
+  });
+
+  getPlayerRequestId((request_id) => {
+    console.log("Request id: " + request_id)
+  });
+
+  getContractBalance((balance) => {
+    console.log("Contract balance: " + balance)
+  });
+}
+
+var display_click_count_poller = setInterval(poll,500)
+
+function _disconnectWallet() {
+  disconnectWallet()
+}
+window._disconnectWallet = _disconnectWallet;

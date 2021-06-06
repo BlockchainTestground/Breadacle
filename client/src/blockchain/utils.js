@@ -1,6 +1,6 @@
 import Web3 from "./web3.js";
 
-var SMART_CONTRACT_ABI_PATH = "./contracts/TestgroundGame.json"
+var SMART_CONTRACT_ABI_PATH = "./contracts/DiceGame.json"
 
 const getWeb3 = async () => {
   return new Promise((resolve, reject) => {
@@ -108,4 +108,4 @@ const showExcercise = (option, accounts) => {
     : "none";
 };
 
-export {getWeb3, getContract}
+export { getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei }
