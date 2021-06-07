@@ -3,12 +3,26 @@ pragma solidity 0.8.4;
 
 import "./dependencies/VRFConsumerBase.sol";
 
+/**
+  * Network: Kovan
+  * Chainlink VRF Coordinator address: 0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9
+  * LINK token address:                0xa36085F69e2889c224210F603D836748e7dC0088
+  * Key Hash: 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4
+  * Fee: 0.1
+  */
+/**
+  * Network: Mumbai
+  * Chainlink VRF Coordinator address: 0x8C7382F9D8f56b33781fE506E897a4F1e2d17255
+  * LINK token address:                0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+  * Key Hash: 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4
+  * Fee: 0.0001
+  */
+
 contract DiceGame is VRFConsumerBase {
   address owner;
   uint256 public bet_percentage_fee = 10;
   uint256 public minimum_bet = 0;
   uint256 public maximum_bet = 100 ether;
-  string public hola = "a";
 
   enum Status { Finished, WaitingForOracle }
   enum Result { Pending, PlayerWon, PlayerLost }
@@ -27,8 +41,8 @@ contract DiceGame is VRFConsumerBase {
   );
 
   // Chainlink internal setup
-  bytes32 internal keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
-  uint256 internal fee = 0.0001 * 10 ** 18;
+  bytes32 internal keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4;
+  uint256 internal fee = 0.1 * 10 ** 18;
 
   // Random handlers
   mapping(bytes32 => Game) public games;
@@ -38,8 +52,8 @@ contract DiceGame is VRFConsumerBase {
   constructor()
   public
   VRFConsumerBase(
-    0x8C7382F9D8f56b33781fE506E897a4F1e2d17255 /* VRF Coordinator */,
-    0x326C977E6efc84E512bB9C30f76E30c160eD06FB /* Link Mumbai Token Contract */)
+    0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9 /* VRF Coordinator */,
+    0xa36085F69e2889c224210F603D836748e7dC0088 /* Link Mumbai Token Contract */)
   {
     owner = msg.sender;
   }
@@ -59,16 +73,17 @@ contract DiceGame is VRFConsumerBase {
     player_status[msg.sender] = Status.WaitingForOracle;
     player_request_id[msg.sender] = requestId;
 
-    hola = "b";
-
     return requestId;
+  }
+
+  function getRandomNumber(uint256 userProvidedSeed) public returns (bytes32 requestId) {
+    require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
+    return requestRandomness(keyHash, fee, userProvidedSeed);
   }
 
   function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override
   {
-    hola = "c";
-    //address player = games[requestId].player;
-    /*
+    address player = games[requestId].player;
     uint256 transfered_to_player = 0;
     
     if(randomness%2 == games[requestId].selection)
@@ -76,27 +91,24 @@ contract DiceGame is VRFConsumerBase {
       games[requestId].result = Result.PlayerWon;
     }else
     {
-      games[requestId].result = Result.PlayerWon;
+      games[requestId].result = Result.PlayerLost;
     }
 
     if(games[requestId].result == Result.PlayerWon)
     {
-      transfered_to_player = games[requestId].bet_amount * bet_percentage_fee / 10000;
+      transfered_to_player = games[requestId].bet_amount - games[requestId].bet_amount * bet_percentage_fee / 10000;
       payable(player).transfer(
         transfered_to_player
       );
     }
-    */
-    //player_status[player] = Status.Finished;
+    player_status[player] = Status.Finished;
 
-    /*
     emit GameResult(
       player,
       games[requestId].result,
       games[requestId].bet_amount,
       transfered_to_player
     );
-    */
   }
 
   // Owner functions
