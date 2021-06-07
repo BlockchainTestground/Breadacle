@@ -47,12 +47,12 @@ module.exports = {
     // options below to some value.
     //
     mumbai: {
-      provider: () => new HDWalletProvider(mnemonic, `https://rpc-mumbai.maticvigil.com`),
+      provider: () => new HDWalletProvider(mnemonic, `https://matic-mumbai.chainstacklabs.com`),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,
       skipDryRun: false,
-      networkCheckTimeout: 999,
+      networkCheckTimeout: 9999,
     },
     matic: {
       provider: () => new HDWalletProvider(mnemonic, `https://rpc-mainnet.maticvigil.com`),

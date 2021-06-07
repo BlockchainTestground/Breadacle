@@ -21,7 +21,7 @@ truffle migrate --network matic
 
 # Current Deployment
 
-Currently deployed at `0xAdf3268D08aFBD5be282993fB89D4100Ad315a02`. ABI is located at `current_deployment/TestgroundGame.json`.
+Currently deployed at `0x12142e4F8bfEb0c8f6cB12910114DdD25931c311`. ABI is located at `current_deployment/TestgroundGame.json`.
 
 # Related contracts and documentation
 

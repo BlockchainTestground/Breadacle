@@ -8,6 +8,7 @@ contract DiceGame is VRFConsumerBase {
   uint256 public bet_percentage_fee = 10;
   uint256 public minimum_bet = 0;
   uint256 public maximum_bet = 100 ether;
+  string public hola = "a";
 
   enum Status { Finished, WaitingForOracle }
   enum Result { Pending, PlayerWon, PlayerLost }
@@ -47,8 +48,8 @@ contract DiceGame is VRFConsumerBase {
   {
     require(LINK.balanceOf(address(this)) > fee, "Not enough LINK - fill contract with faucet");
     require(msg.value <= address(this).balance, "Not enough matic liquidity on the contract");
-    require(msg.value <= minimum_bet, "Bet must be above minimum");
-    require(msg.value >= maximum_bet, "Bet must be below maximum");
+    require(msg.value >= minimum_bet, "Bet must be above minimum");
+    require(msg.value <= maximum_bet, "Bet must be below maximum");
 
     bytes32 requestId = requestRandomness(keyHash, fee, userProvidedSeed);
 
@@ -58,15 +59,19 @@ contract DiceGame is VRFConsumerBase {
     player_status[msg.sender] = Status.WaitingForOracle;
     player_request_id[msg.sender] = requestId;
 
+    hola = "b";
+
     return requestId;
   }
 
-  function fulfillRandomness(bytes32 requestId, uint256 randomnes) internal override
+  function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override
   {
-    address player = games[requestId].player;
+    hola = "c";
+    //address player = games[requestId].player;
+    /*
     uint256 transfered_to_player = 0;
     
-    if(randomnes%2 == games[requestId].selection)
+    if(randomness%2 == games[requestId].selection)
     {
       games[requestId].result = Result.PlayerWon;
     }else
@@ -81,14 +86,17 @@ contract DiceGame is VRFConsumerBase {
         transfered_to_player
       );
     }
-    player_status[player] = Status.Finished;
+    */
+    //player_status[player] = Status.Finished;
 
+    /*
     emit GameResult(
       player,
       games[requestId].result,
       games[requestId].bet_amount,
       transfered_to_player
     );
+    */
   }
 
   // Owner functions
@@ -116,6 +124,10 @@ contract DiceGame is VRFConsumerBase {
   function setMaximumBet(uint256 amount) public isOwner()
   {
     maximum_bet = amount;
+  }
+
+  function withdrawLink() external isOwner() {
+    require(LINK.transfer(msg.sender, LINK.balanceOf(address(this))), "Unable to transfer");
   }
 
   // Misc

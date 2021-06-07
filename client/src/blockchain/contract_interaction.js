@@ -68,22 +68,20 @@ async function initContractInteraction() {
 
 initContractInteraction()
 
-const rollAsync = async (userProvidedSeed, selection) => {
+var roll = async function (userProvidedSeed, selection, amount, callback) {
   await contract.methods
-    .roll("123", "1")
-    .send({ from: accounts[0], gas: 400000, value: "1" })
+    .roll(userProvidedSeed, selection)
+    .send({ from: accounts[0], gas: 400000, value: convertCryptoToWei(amount) })
     .catch((revertReason) => {
       getRevertReason(revertReason.receipt.transactionHash);
     });
-};
+  callback()
+}
 
-function roll(userProvidedSeed, selection)
-{
-  console.log(userProvidedSeed, selection)
-  var awaitFunction = async function () {
-    await rollAsync(userProvidedSeed, selection)
-  }
-  awaitFunction()
+var getHola = async function (callback) {
+  var result = await contract.methods
+  .hola().call()
+  callback(result)
 }
 
 var getPlayerStatus = async function (callback) {
@@ -104,6 +102,12 @@ var getContractBalance = async function (callback) {
   callback(result)
 }
 
+var getLinkBalance = async function (callback) {
+  var result = await contract.methods
+  .getLinkBalance().call()
+  callback(result)
+}
+
 async function loadNavbar() {
   const contentDiv = document.getElementById("navbar");
   contentDiv.innerHTML = await (await fetch("./html/navbar.html")).text()
@@ -111,4 +115,4 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance}
+export {roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance, getLinkBalance, getHola}
