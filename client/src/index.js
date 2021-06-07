@@ -28,9 +28,9 @@ function preload() {
 
   this.load.dragonbone(
       "x",
-      "src/assets/Bread_tex.png",
-      "src/assets/Bread_tex.json",
-      "src/assets/Bread_ske.json",
+      "src/assets/NewProject_2_tex.png",
+      "src/assets/NewProject_2_tex.json",
+      "src/assets/NewProject_2_ske.json",
   );
 }
 
