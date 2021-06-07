@@ -28,9 +28,9 @@ function preload() {
 
   this.load.dragonbone(
       "x",
-      "src/assets/NewProject_2_tex.png",
-      "src/assets/NewProject_2_tex.json",
-      "src/assets/NewProject_2_ske.json",
+      "src/assets/DragonBonesFiles/AjoloteAlien_tex.png",
+      "src/assets/DragonBonesFiles/AjoloteAlien_tex.json",
+      "src/assets/DragonBonesFiles/AjoloteAlien_ske.json",
   );
 }
 

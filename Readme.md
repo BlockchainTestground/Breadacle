@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/9842efac-6f38-40a2-843a-cf505beae7a3/deploy-status)](https://app.netlify.com/sites/optimistic-jennings-d2f009/deploys)
+
 # Dependencies
 
 ```bash
