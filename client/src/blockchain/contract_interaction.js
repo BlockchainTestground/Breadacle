@@ -1,6 +1,7 @@
 import {getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei} from './utils.js';
 
-var NETWORK_ID = 80001 //Mumbai
+var NETWORK_ID = 42 //Kovan
+//var NETWORK_ID = 80001 //Mumbai
 //const NETWORK_ID = 137 //Matic
 var contract
 var accounts
@@ -78,12 +79,6 @@ var roll = async function (userProvidedSeed, selection, amount, callback) {
   callback()
 }
 
-var getHola = async function (callback) {
-  var result = await contract.methods
-  .hola().call()
-  callback(result)
-}
-
 var getPlayerStatus = async function (callback) {
   var result = await contract.methods
   .player_status(accounts[0]).call()
@@ -115,4 +110,4 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance, getLinkBalance, getHola}
+export {roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance, getLinkBalance}

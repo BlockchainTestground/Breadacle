@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
-import { roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance, getLinkBalance, getHola } from "./blockchain/contract_interaction";
+import { roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance, getLinkBalance } from "./blockchain/contract_interaction";
 import logoImg from "./assets/logo.png";
 
 const config = {
@@ -43,7 +43,7 @@ function create() {
 
   this.approveBtn = this.add.sprite(600, 500, 'button').setInteractive();
   this.approveBtn.on('pointerdown', function (event) {
-    roll("123", "1", "0.001", (request_id) => {
+    roll("123", "1", "0.01", (request_id) => {
       console.log(request_id)
     });
   });
@@ -66,10 +66,6 @@ function poll() {
 
   getLinkBalance((balance) => {
     console.log("Link balance: " + balance)
-  });
-
-  getHola((hola) => {
-    console.log("Hla: " + hola)
   });
 }
 

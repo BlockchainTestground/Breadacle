@@ -17,13 +17,14 @@ truffle compile
 Create a new migration on the `./migrations/` directory following the same sequence. Create a `.secret` file and paste your mnemonic. An then:
 
 ```bash
+truffle migrate --network kovan
 truffle migrate --network mumbai
 truffle migrate --network matic
 ```
 
 # Current Deployment
 
-Currently deployed at `0x12142e4F8bfEb0c8f6cB12910114DdD25931c311`. ABI is located at `current_deployment/TestgroundGame.json`.
+Currently deployed at `0x12a302598Df6C1F25f26F5Eb04053318967b6Ac1`. ABI is located at `current_deployment/TestgroundGame.json`.
 
 # Related contracts and documentation
 
