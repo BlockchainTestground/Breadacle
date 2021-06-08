@@ -27,6 +27,7 @@ const config = {
 
 const game = new Phaser.Game(config);
 var button
+var ui_text
 var current_request_id = null
 
 function preload() {
@@ -48,9 +49,13 @@ function create() {
   arm.y = 300;
   arm.animation.play("animtion0");
 
+  ui_text = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+
   this.approveBtn = this.add.sprite(600, 500, 'button').setInteractive();
   this.approveBtn.on('pointerdown', function (event) {
+    ui_text.text = "Waiting confirmation"
     roll("123", "1", "0.01", () => {
+      ui_text.text = "Waiting oracle"
       getPlayerRequestId((request_id) => {
         current_request_id = request_id
         console.log(current_request_id)
@@ -72,9 +77,15 @@ function poll() {
         current_request_id = null
         
       if(game.result == Result.PlayerWon)
+      {
         console.log("Player won")
+        ui_text.text = "Player won"
+      }
       if(game.result == Result.PlayerLost)
+      {
         console.log("Player lost")
+        ui_text.text = "Player lost"
+      }
     });
   }
   /*
