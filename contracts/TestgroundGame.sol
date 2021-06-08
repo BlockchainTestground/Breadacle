@@ -23,8 +23,7 @@ contract DiceGame is VRFConsumerBase {
   uint256 public bet_percentage_fee = 1000;// 10.00%
   uint256 public minimum_bet = 0;
   uint256 public maximum_bet = 100 ether;
-
-  enum Status { Finished, WaitingForOracle }
+  
   enum Result { Pending, PlayerWon, PlayerLost }
   struct Game {
     address player;
@@ -46,7 +45,6 @@ contract DiceGame is VRFConsumerBase {
 
   // Random handlers
   mapping(bytes32 => Game) public games;
-  mapping(address => Status) public player_status;
   mapping(address => bytes32) public player_request_id;
 
   constructor()
@@ -70,7 +68,6 @@ contract DiceGame is VRFConsumerBase {
     games[requestId].player = msg.sender;
     games[requestId].bet_amount = msg.value;
     games[requestId].selection = selection;
-    player_status[msg.sender] = Status.WaitingForOracle;
     player_request_id[msg.sender] = requestId;
 
     return requestId;
@@ -101,7 +98,6 @@ contract DiceGame is VRFConsumerBase {
         transfered_to_player
       );
     }
-    player_status[player] = Status.Finished;
 
     emit GameResult(
       player,

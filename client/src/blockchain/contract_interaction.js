@@ -79,12 +79,6 @@ var roll = async function (userProvidedSeed, selection, amount, callback) {
   callback()
 }
 
-var getPlayerStatus = async function (callback) {
-  var result = await contract.methods
-  .player_status(accounts[0]).call()
-  callback(result)
-}
-
 var getPlayerRequestId = async function (callback) {
   var result = await contract.methods
   .player_request_id(accounts[0]).call()
@@ -103,6 +97,12 @@ var getLinkBalance = async function (callback) {
   callback(result)
 }
 
+var getGame = async function (request_id, callback) {
+  var result = await contract.methods
+    .games(request_id).call()
+  callback(result)
+}
+
 async function loadNavbar() {
   const contentDiv = document.getElementById("navbar");
   contentDiv.innerHTML = await (await fetch("./html/navbar.html")).text()
@@ -110,4 +110,4 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance, getLinkBalance}
+export {roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei}
