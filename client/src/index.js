@@ -14,6 +14,9 @@ const config = {
   parent: "phaser-example",
   width: 800,
   height: 600,
+  dom: {
+    createContainer: true
+  },
   plugins: {
     scene: [
       { key: "DragonBones", plugin: dragonBones.phaser.plugin.DragonBonesScenePlugin, mapping: "dragonbone" } // setup DB plugin
@@ -26,13 +29,15 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
-var button
 var ui_text
 var current_request_id = null
+var current_amount = 0.1
 
 function preload() {
-  this.load.image("logo", logoImg);
-  this.load.image('button', './src/assets/button.png');
+  this.load.image("logo", logoImg)
+  this.load.image('a', './src/assets/a.png')
+  this.load.image('b', './src/assets/b.png')
+  this.load.html('nameform', './src/assets/html/amount.html');
 
   this.load.dragonbone(
       "x",
@@ -51,18 +56,33 @@ function create() {
 
   ui_text = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
 
-  this.approveBtn = this.add.sprite(600, 500, 'button').setInteractive();
-  this.approveBtn.on('pointerdown', function (event) {
-    ui_text.text = "Waiting confirmation"
-    roll("123", "1", "0.01", () => {
-      ui_text.text = "Waiting oracle"
-      getPlayerRequestId((request_id) => {
-        current_request_id = request_id
-        console.log(current_request_id)
-      });
-    });
+  var element = this.add.dom(120, 100).createFromCache('nameform');
+  element.addListener('input');
+  element.on('input', function (event) {
+    current_amount = document.getElementById('bet_amount').value;
   });
 
+  this.approveBtnA = this.add.sprite(60, 200, 'a').setInteractive();
+  this.approveBtnA.on('pointerdown', function (event) {
+    onRoll("0")
+  });
+
+  this.approveBtnB = this.add.sprite(150, 200, 'b').setInteractive();
+  this.approveBtnB.on('pointerdown', function (event) {
+    onRoll("1")
+  });
+}
+
+function onRoll(selection)
+{
+  ui_text.text = "Waiting confirmation"
+  roll("123", selection, current_amount, () => {
+    ui_text.text = "Waiting oracle"
+    getPlayerRequestId((request_id) => {
+      current_request_id = request_id
+      console.log(current_request_id)
+    });
+  });
 }
 
 function poll() {
