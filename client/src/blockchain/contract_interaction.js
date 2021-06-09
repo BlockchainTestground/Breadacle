@@ -24,10 +24,9 @@ function onDisconnect() {
   document.getElementById("logout-button").style.display = "none"
 }
 
-async function getBalance() {
-  var balance_temp = await web3.eth.getBalance(accounts[0])
-  balance = convertWeiToCrypto(balance_temp)
-  document.getElementById("my-balance").innerHTML = parseFloat(balance).toFixed(4) + " MATIC"
+var getBalance = async function (callback) {
+  var result = await web3.eth.getBalance(accounts[0])
+  callback(result)
 }
 
 function disconnectWallet() {
@@ -39,7 +38,6 @@ function disconnectWallet() {
 async function getAccounts() {
   accounts = await web3.eth.getAccounts()
   onConnect()
-  getBalance()
 }
 
 async function initContractInteraction() {
@@ -110,4 +108,4 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei}
+export {roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance}

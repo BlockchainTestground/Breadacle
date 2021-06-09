@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
-import { roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei } from "./blockchain/contract_interaction";
+import { roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance } from "./blockchain/contract_interaction";
 import logoImg from "./assets/logo.png";
 
 const Result = {
@@ -31,13 +31,17 @@ const config = {
 const game = new Phaser.Game(config);
 var ui_text
 var current_request_id = null
-var current_amount = 0.1
+var current_amount = "0.1"
+var matic_balance
+var amount_form_html
 
 function preload() {
   this.load.image("logo", logoImg)
   this.load.image('a', './src/assets/a.png')
   this.load.image('b', './src/assets/b.png')
-  this.load.html('nameform', './src/assets/html/amount.html');
+  this.load.image('rules_button', './src/assets/rules_button.png')
+  this.load.html('amount_form_html', './src/assets/html/amount.html');
+  this.load.html('rules_html', './src/assets/html/rules.html');
 
   this.load.dragonbone(
       "x",
@@ -54,22 +58,30 @@ function create() {
   arm.y = 300;
   arm.animation.play("animtion0");
 
-  ui_text = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+  ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+  matic_balance = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
 
-  var element = this.add.dom(120, 100).createFromCache('nameform');
+  amount_form_html = this.add.dom(600, 200).createFromCache('rules_html');
+  amount_form_html.visible = false
+  var element = this.add.dom(120, 100).createFromCache('amount_form_html');
   element.addListener('input');
   element.on('input', function (event) {
     current_amount = document.getElementById('bet_amount').value;
   });
 
-  this.approveBtnA = this.add.sprite(60, 200, 'a').setInteractive();
-  this.approveBtnA.on('pointerdown', function (event) {
+  this.BtnA = this.add.sprite(60, 200, 'a').setInteractive();
+  this.BtnA.on('pointerdown', function (event) {
     onRoll("0")
   });
 
-  this.approveBtnB = this.add.sprite(150, 200, 'b').setInteractive();
-  this.approveBtnB.on('pointerdown', function (event) {
+  this.BtnB = this.add.sprite(150, 200, 'b').setInteractive();
+  this.BtnB.on('pointerdown', function (event) {
     onRoll("1")
+  });
+
+  this.rulesBtn = this.add.sprite(650, 50, 'rules_button').setInteractive();
+  this.rulesBtn.on('pointerdown', function (event) {
+    amount_form_html.visible = !amount_form_html.visible
   });
 }
 
@@ -108,6 +120,10 @@ function poll() {
       }
     });
   }
+
+  getBalance((balance) => {
+    matic_balance.text = convertWeiToCrypto(balance) + " Matic"
+  });
   /*
   getContractBalance((balance) => {
     console.log("Contract balance: " + balance)
