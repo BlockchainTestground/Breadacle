@@ -38,12 +38,8 @@ var amount_form_html
 var arm
 
 function preload() {
-  this.load.image("logo", logoImg)
   this.load.image('a', './src/assets/a.png')
   this.load.image('b', './src/assets/b.png')
-  this.load.image('rules_button', './src/assets/rules_button.png')
-  this.load.html('amount_form_html', './src/assets/html/amount.html');
-  this.load.html('rules_html', './src/assets/html/rules.html');
 
   this.load.dragonbone(
       "x",
@@ -63,29 +59,6 @@ function create() {
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
   matic_balance = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
-
-  amount_form_html = this.add.dom(600, 200).createFromCache('rules_html');
-  amount_form_html.visible = false
-  var element = this.add.dom(120, 100).createFromCache('amount_form_html');
-  element.addListener('input');
-  element.on('input', function (event) {
-    current_amount = document.getElementById('bet_amount').value;
-  });
-
-  this.BtnA = this.add.sprite(60, 200, 'a').setInteractive();
-  this.BtnA.on('pointerdown', function (event) {
-    onRoll("0")
-  });
-
-  this.BtnB = this.add.sprite(150, 200, 'b').setInteractive();
-  this.BtnB.on('pointerdown', function (event) {
-    onRoll("1")
-  });
-
-  this.rulesBtn = this.add.sprite(650, 50, 'rules_button').setInteractive();
-  this.rulesBtn.on('pointerdown', function (event) {
-    amount_form_html.visible = !amount_form_html.visible
-  });
 }
 
 function onRoll(selection)
@@ -146,4 +119,20 @@ var display_click_count_poller = setInterval(poll,500)
 function _disconnectWallet() {
   disconnectWallet()
 }
+
+function onAClicked() {
+  onRoll("0")
+}
+
+function onBClicked() {
+  onRoll("1")
+}
+
+function onBetAmountUpdate() {
+  current_amount = document.getElementById('bet_amount').value
+}
+
 window._disconnectWallet = _disconnectWallet;
+window.onAClicked = onAClicked;
+window.onBClicked = onBClicked;
+window.onBetAmountUpdate = onBetAmountUpdate;
