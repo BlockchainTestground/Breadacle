@@ -1,6 +1,7 @@
 import {getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei} from './utils.js';
 
-var NETWORK_ID = 80001 //Mumbai
+var NETWORK_ID = 42 //Kovan
+//var NETWORK_ID = 80001 //Mumbai
 //const NETWORK_ID = 137 //Matic
 var contract
 var accounts
@@ -23,10 +24,9 @@ function onDisconnect() {
   document.getElementById("logout-button").style.display = "none"
 }
 
-async function getBalance() {
-  var balance_temp = await web3.eth.getBalance(accounts[0])
-  balance = convertWeiToCrypto(balance_temp)
-  document.getElementById("my-balance").innerHTML = parseFloat(balance).toFixed(4) + " MATIC"
+var getBalance = async function (callback) {
+  var result = await web3.eth.getBalance(accounts[0])
+  callback(result)
 }
 
 function disconnectWallet() {
@@ -38,7 +38,6 @@ function disconnectWallet() {
 async function getAccounts() {
   accounts = await web3.eth.getAccounts()
   onConnect()
-  getBalance()
 }
 
 async function initContractInteraction() {
@@ -68,28 +67,14 @@ async function initContractInteraction() {
 
 initContractInteraction()
 
-const rollAsync = async (userProvidedSeed, selection) => {
+var roll = async function (userProvidedSeed, selection, amount, callback) {
   await contract.methods
-    .roll("123", "1")
-    .send({ from: accounts[0], gas: 400000, value: "1" })
+    .roll(userProvidedSeed, selection)
+    .send({ from: accounts[0], gas: 400000, value: convertCryptoToWei(amount) })
     .catch((revertReason) => {
       getRevertReason(revertReason.receipt.transactionHash);
     });
-};
-
-function roll(userProvidedSeed, selection)
-{
-  console.log(userProvidedSeed, selection)
-  var awaitFunction = async function () {
-    await rollAsync(userProvidedSeed, selection)
-  }
-  awaitFunction()
-}
-
-var getPlayerStatus = async function (callback) {
-  var result = await contract.methods
-  .player_status(accounts[0]).call()
-  callback(result)
+  callback()
 }
 
 var getPlayerRequestId = async function (callback) {
@@ -104,6 +89,18 @@ var getContractBalance = async function (callback) {
   callback(result)
 }
 
+var getLinkBalance = async function (callback) {
+  var result = await contract.methods
+  .getLinkBalance().call()
+  callback(result)
+}
+
+var getGame = async function (request_id, callback) {
+  var result = await contract.methods
+    .games(request_id).call()
+  callback(result)
+}
+
 async function loadNavbar() {
   const contentDiv = document.getElementById("navbar");
   contentDiv.innerHTML = await (await fetch("./html/navbar.html")).text()
@@ -111,4 +108,4 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, getPlayerStatus, getPlayerRequestId, getContractBalance}
+export {roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance}

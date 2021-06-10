@@ -55,7 +55,7 @@ async function getRevertReason(txHash) {
     })
     .catch((revertReason) => {
       var str = "" + revertReason;
-      json_reason = JSON.parse(str.substring(str.indexOf("{")));
+      var json_reason = JSON.parse(str.substring(str.indexOf("{")));
       handleRevertError(json_reason.message);
     });
 }

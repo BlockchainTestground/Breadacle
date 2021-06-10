@@ -47,12 +47,12 @@ module.exports = {
     // options below to some value.
     //
     mumbai: {
-      provider: () => new HDWalletProvider(mnemonic, `https://rpc-mumbai.maticvigil.com`),
+      provider: () => new HDWalletProvider(mnemonic, `https://matic-mumbai.chainstacklabs.com`),
       network_id: 80001,
       confirmations: 2,
       timeoutBlocks: 200,
       skipDryRun: false,
-      networkCheckTimeout: 999,
+      networkCheckTimeout: 9999,
     },
     matic: {
       provider: () => new HDWalletProvider(mnemonic, `https://rpc-mainnet.maticvigil.com`),
@@ -61,6 +61,15 @@ module.exports = {
       timeoutBlocks: 200,
       skipDryRun: true
     },
+    kovan: {
+      provider: function() {
+        return new HDWalletProvider(mnemonic, `https://kovan.infura.io/v3/a3e70735b4cf401b9148e1fea8f5a288`)
+      },
+      network_id: 42,
+      confirmations: 2,
+      timeoutBlocks: 200,
+      skipDryRun: true
+    }
     // development: {
     //  host: "127.0.0.1",     // Localhost (default: none)
     //  port: 8545,            // Standard Ethereum port (default: none)
