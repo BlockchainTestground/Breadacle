@@ -33,7 +33,6 @@ const game = new Phaser.Game(config);
 var ui_text
 var current_request_id = null
 var current_amount = "0.1"
-var matic_balance
 var amount_form_html
 var arm
 
@@ -58,7 +57,6 @@ function create() {
   //arm.animation.play("animtion1");
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
-  matic_balance = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
 }
 
 function onRoll(selection)
@@ -101,7 +99,7 @@ function poll() {
   }
 
   getBalance((balance) => {
-    matic_balance.text = convertWeiToCrypto(balance) + " Matic"
+    document.getElementById('my-balance').innerHTML = convertWeiToCrypto(balance) + " Matic"
   });
   /*
   getContractBalance((balance) => {
