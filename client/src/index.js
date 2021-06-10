@@ -12,8 +12,8 @@ const Result = {
 const config = {
   type: Phaser.AUTO,
   parent: "phaser-example",
-  width: 1280,
-  height: 720,
+  width: 600,
+  height: 600,
   dom: {
     createContainer: true
   },
@@ -35,6 +35,7 @@ var current_request_id = null
 var current_amount = "0.1"
 var matic_balance
 var amount_form_html
+var arm
 
 function preload() {
   this.load.image("logo", logoImg)
@@ -54,10 +55,11 @@ function preload() {
 
 function create() {
 
-  const arm = this.add.armature("Armature", "x");
+  arm = this.add.armature("Armature", "x");
   arm.x = 400;
   arm.y = 300;
-  arm.animation.play("animtion1");
+  arm.animation.play("animtion0");
+  //arm.animation.play("animtion1");
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
   matic_balance = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
@@ -91,6 +93,7 @@ function onRoll(selection)
   ui_text.text = "Waiting confirmation"
   roll("123", selection, current_amount, () => {
     ui_text.text = "Waiting oracle"
+    arm.animation.play("animtion1");
     getPlayerRequestId((request_id) => {
       current_request_id = request_id
       console.log(current_request_id)
@@ -113,11 +116,13 @@ function poll() {
       {
         console.log("Player won")
         ui_text.text = "Player won"
+        arm.animation.play("animtion0");
       }
       if(game.result == Result.PlayerLost)
       {
         console.log("Player lost")
         ui_text.text = "Player lost"
+        arm.animation.play("animtion0");
       }
     });
   }
