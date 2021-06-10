@@ -93,7 +93,9 @@ contract DiceGame is VRFConsumerBase {
 
     if(games[requestId].result == Result.PlayerWon)
     {
-      transfered_to_player = games[requestId].bet_amount - games[requestId].bet_amount * bet_percentage_fee / 10000;
+      uint256 reward = games[requestId].bet_amount * 2;
+      uint256 _fee = reward * bet_percentage_fee / 10000;
+      transfered_to_player = reward - _fee;
       payable(player).transfer(
         transfered_to_player
       );
@@ -110,13 +112,17 @@ contract DiceGame is VRFConsumerBase {
   // Owner functions
   modifier isOwner()
   {
-    require(msg.sender == owner, "You must the the owner");
+    require(msg.sender == owner, "You must be the owner");
     _;
   }
   
-  function retrieveFunds(uint256 amount) public isOwner()
+  function withdrawFunds(uint256 amount) public isOwner()
   {
     payable(msg.sender).transfer(amount);
+  }
+
+  function withdrawLink() external isOwner() {
+    require(LINK.transfer(msg.sender, LINK.balanceOf(address(this))), "Unable to transfer");
   }
 
   function setOwner(address new_owner) public isOwner()
@@ -137,10 +143,6 @@ contract DiceGame is VRFConsumerBase {
   function setMaximumBet(uint256 amount) public isOwner()
   {
     maximum_bet = amount;
-  }
-
-  function withdrawLink() external isOwner() {
-    require(LINK.transfer(msg.sender, LINK.balanceOf(address(this))), "Unable to transfer");
   }
 
   // Misc

@@ -12,8 +12,8 @@ const Result = {
 const config = {
   type: Phaser.AUTO,
   parent: "phaser-example",
-  width: 800,
-  height: 600,
+  width: 1280,
+  height: 720,
   dom: {
     createContainer: true
   },
@@ -22,6 +22,7 @@ const config = {
       { key: "DragonBones", plugin: dragonBones.phaser.plugin.DragonBonesScenePlugin, mapping: "dragonbone" } // setup DB plugin
     ]
   },
+  transparent: true,
   scene: {
     preload: preload,
     create: create
@@ -56,7 +57,7 @@ function create() {
   const arm = this.add.armature("Armature", "x");
   arm.x = 400;
   arm.y = 300;
-  arm.animation.play("animtion0");
+  arm.animation.play("animtion1");
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
   matic_balance = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
