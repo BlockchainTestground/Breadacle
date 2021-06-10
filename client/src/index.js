@@ -6,7 +6,7 @@ import logoImg from "./assets/logo.png";
 const config = {
   type: Phaser.AUTO,
   parent: "phaser-example",
-  width: 800,
+  width: 600,
   height: 600,
   plugins: {
     scene: [
@@ -39,7 +39,7 @@ function create() {
   const arm = this.add.armature("Armature", "x");
   arm.x = 400;
   arm.y = 300;
-  arm.animation.play("animtion0");
+  arm.animation.play("animtion1");
 
   this.approveBtn = this.add.sprite(600, 500, 'button').setInteractive();
   this.approveBtn.on('pointerdown', function (event) {
