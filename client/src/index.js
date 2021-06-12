@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
 import { roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance } from "./blockchain/contract_interaction";
 import logoImg from "./assets/logo.png";
-
+import animationTrigger from './AnimationTriggers';
 const Result = {
   Pending: 0,
   PlayerWon: 1,
@@ -42,14 +42,14 @@ function preload() {
   this.load.image('b', './src/assets/b.png')
 
   this.load.dragonbone(
-      "x",
+      animationTrigger.throne.name,
       "src/assets/DragonBonesFiles/Throne/Throne_tex.png",
       "src/assets/DragonBonesFiles/Throne/Throne_tex.json",
       "src/assets/DragonBonesFiles/Throne/Throne_ske.json",
   );
 
   this.load.dragonbone(
-    "z",
+    animationTrigger.toaster.name,
     "src/assets/DragonBonesFiles/OracleToaster/Toaster_tex.png",
     "src/assets/DragonBonesFiles/OracleToaster/Toaster_tex.json",
     "src/assets/DragonBonesFiles/OracleToaster/Toaster_ske.json",
@@ -58,23 +58,22 @@ function preload() {
 
 function create() {
 
-  arm = this.add.armature("Armature", "x");
-  arm.x = 400;
-  arm.y = 300;
-  arm.animation.play("throneAnimation");
-  arm.animation.play("animtion1");
-
-  arm2 = this.add.armature("Armature", "z");
+  arm2 = this.add.armature("Armature", animationTrigger.throne.name);
   arm2.x = 400;
-  arm2.y = 375;
-  arm2.animation.play("StartToast");
+  arm2.y = 300;
+  arm2.animation.play(animationTrigger.throne.animations.throne_idle);
 
+  arm = this.add.armature("Armature", animationTrigger.toaster.name);
+  arm.x = 400;
+  arm.y = 375;
+  arm.animation.play(animationTrigger.toaster.animations.idle);
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
 }
 
 function onRoll(selection)
 {
   ui_text.text = "Waiting confirmation"
+  arm.animation.play(animationTrigger.toaster.animations.oracle_loop);
   roll("123", selection, current_amount, () => {
     ui_text.text = "Waiting oracle"
     arm.animation.play("animtion1");
