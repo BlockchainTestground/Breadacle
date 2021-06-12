@@ -4,7 +4,25 @@
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
   </head>
-  <body>
+  <body style="background-image: url('https://cdn.discordapp.com/attachments/841800009229795349/852392091862433822/Living_Room.png');">
+    <div ></div>
     <div id="navbar"></div>
   </body>
+  <button class="button" onclick="document.getElementById('rules_modal').classList.add('is-active')">Rules</button>
+  <button class="button" onclick="onAClicked()">A</button>
+  <button class="button" onclick="onBClicked()">B</button>
+  <input id="bet_amount" class="input" type="text" onkeyup="onBetAmountUpdate()" value="0.1">
+  <div id="rules_modal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Modal title</p>
+        <button onclick="document.getElementById('rules_modal').classList.remove('is-active')" class="delete" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <!-- Content ... -->
+        Loren ipsum
+      </section>
+    </div>
+  </div>
 </html>

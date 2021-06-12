@@ -22,6 +22,7 @@ const config = {
       { key: "DragonBones", plugin: dragonBones.phaser.plugin.DragonBonesScenePlugin, mapping: "dragonbone" } // setup DB plugin
     ]
   },
+  transparent: true,
   scene: {
     preload: preload,
     create: create
@@ -32,16 +33,12 @@ const game = new Phaser.Game(config);
 var ui_text
 var current_request_id = null
 var current_amount = "0.1"
-var matic_balance
 var amount_form_html
+var arm
 
 function preload() {
-  this.load.image("logo", logoImg)
   this.load.image('a', './src/assets/a.png')
   this.load.image('b', './src/assets/b.png')
-  this.load.image('rules_button', './src/assets/rules_button.png')
-  this.load.html('amount_form_html', './src/assets/html/amount.html');
-  this.load.html('rules_html', './src/assets/html/rules.html');
 
   this.load.dragonbone(
       "x",
@@ -53,36 +50,13 @@ function preload() {
 
 function create() {
 
-  const arm = this.add.armature("Armature", "x");
+  arm = this.add.armature("Armature", "x");
   arm.x = 400;
   arm.y = 300;
-  arm.animation.play("animtion1");
+  arm.animation.play("animtion0");
+  //arm.animation.play("animtion1");
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
-  matic_balance = this.add.text(0, 0, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
-
-  amount_form_html = this.add.dom(600, 200).createFromCache('rules_html');
-  amount_form_html.visible = false
-  var element = this.add.dom(120, 100).createFromCache('amount_form_html');
-  element.addListener('input');
-  element.on('input', function (event) {
-    current_amount = document.getElementById('bet_amount').value;
-  });
-
-  this.BtnA = this.add.sprite(60, 200, 'a').setInteractive();
-  this.BtnA.on('pointerdown', function (event) {
-    onRoll("0")
-  });
-
-  this.BtnB = this.add.sprite(150, 200, 'b').setInteractive();
-  this.BtnB.on('pointerdown', function (event) {
-    onRoll("1")
-  });
-
-  this.rulesBtn = this.add.sprite(650, 50, 'rules_button').setInteractive();
-  this.rulesBtn.on('pointerdown', function (event) {
-    amount_form_html.visible = !amount_form_html.visible
-  });
 }
 
 function onRoll(selection)
@@ -90,6 +64,7 @@ function onRoll(selection)
   ui_text.text = "Waiting confirmation"
   roll("123", selection, current_amount, () => {
     ui_text.text = "Waiting oracle"
+    arm.animation.play("animtion1");
     getPlayerRequestId((request_id) => {
       current_request_id = request_id
       console.log(current_request_id)
@@ -112,17 +87,19 @@ function poll() {
       {
         console.log("Player won")
         ui_text.text = "Player won"
+        arm.animation.play("animtion0");
       }
       if(game.result == Result.PlayerLost)
       {
         console.log("Player lost")
         ui_text.text = "Player lost"
+        arm.animation.play("animtion0");
       }
     });
   }
 
   getBalance((balance) => {
-    matic_balance.text = convertWeiToCrypto(balance) + " Matic"
+    document.getElementById('my-balance').innerHTML = convertWeiToCrypto(balance) + " Matic"
   });
   /*
   getContractBalance((balance) => {
@@ -140,4 +117,20 @@ var display_click_count_poller = setInterval(poll,500)
 function _disconnectWallet() {
   disconnectWallet()
 }
+
+function onAClicked() {
+  onRoll("0")
+}
+
+function onBClicked() {
+  onRoll("1")
+}
+
+function onBetAmountUpdate() {
+  current_amount = document.getElementById('bet_amount').value
+}
+
 window._disconnectWallet = _disconnectWallet;
+window.onAClicked = onAClicked;
+window.onBClicked = onBClicked;
+window.onBetAmountUpdate = onBetAmountUpdate;
