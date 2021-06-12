@@ -35,6 +35,7 @@ var current_request_id = null
 var current_amount = "0.1"
 var amount_form_html
 var arm
+var arm2
 
 function preload() {
   this.load.image('a', './src/assets/a.png')
@@ -42,10 +43,17 @@ function preload() {
 
   this.load.dragonbone(
       "x",
-      "src/assets/DragonBonesFiles/AjoloteAlien_tex.png",
-      "src/assets/DragonBonesFiles/AjoloteAlien_tex.json",
-      "src/assets/DragonBonesFiles/AjoloteAlien_ske.json",
+      "src/assets/DragonBonesFiles/Throne/Throne_tex.png",
+      "src/assets/DragonBonesFiles/Throne/Throne_tex.json",
+      "src/assets/DragonBonesFiles/Throne/Throne_ske.json",
   );
+
+  this.load.dragonbone(
+    "z",
+    "src/assets/DragonBonesFiles/OracleToaster/Toaster_tex.png",
+    "src/assets/DragonBonesFiles/OracleToaster/Toaster_tex.json",
+    "src/assets/DragonBonesFiles/OracleToaster/Toaster_ske.json",
+);
 }
 
 function create() {
@@ -53,8 +61,13 @@ function create() {
   arm = this.add.armature("Armature", "x");
   arm.x = 400;
   arm.y = 300;
-  arm.animation.play("animtion0");
-  //arm.animation.play("animtion1");
+  arm.animation.play("throneAnimation");
+  arm.animation.play("animtion1");
+
+  arm2 = this.add.armature("Armature", "z");
+  arm2.x = 400;
+  arm2.y = 375;
+  arm2.animation.play("StartToast");
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
 }
