@@ -11,7 +11,7 @@ const Result = {
 
 const config = {
   type: Phaser.AUTO,
-  parent: "phaser-example",
+  parent: "phaser_canvas",
   width: 600,
   height: 600,
   dom: {

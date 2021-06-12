@@ -14,10 +14,6 @@
   <body>
     <div class="container">
       <div id="navbar"></div>
-      <button class="button" onclick="document.getElementById('rules_modal').classList.add('is-active')">Rules</button>
-      <button class="button" onclick="onAClicked()">A</button>
-      <button class="button" onclick="onBClicked()">B</button>
-      <input id="bet_amount" class="input" type="text" onkeyup="onBetAmountUpdate()" value="0.1">
       <div id="rules_modal" class="modal">
         <div class="modal-background"></div>
         <div class="modal-card">
@@ -29,6 +25,17 @@
             <!-- Content ... -->
             Lorem ipsum
           </section>
+        </div>
+      </div>
+      <div class="columns is-desktop is-vcentered">
+        <div class="column is-two-thirds-desktop">
+          <div id="phaser_canvas"></div>
+        </div>
+        <div class="column is-one-third-desktop">
+          <button class="button" onclick="document.getElementById('rules_modal').classList.add('is-active')">Rules</button>
+          <button class="button" onclick="onAClicked()">A</button>
+          <button class="button" onclick="onBClicked()">B</button>
+          <input id="bet_amount" class="input" type="text" onkeyup="onBetAmountUpdate()" value="0.1">
         </div>
       </div>
     </div>
