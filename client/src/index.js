@@ -64,19 +64,46 @@ function create() {
   arm2.animation.play(animationTrigger.throne.animations.throne_idle);
 
   arm = this.add.armature("Armature", animationTrigger.toaster.name);
+  console.log(dragonBones.EventObject)
+  arm.addDBEventListener(dragonBones.EventObject.LOOP_COMPLETE, animationLoopCompleteCallback, this);
   arm.x = 400;
   arm.y = 375;
   arm.animation.play(animationTrigger.toaster.animations.idle);
+
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+}
+
+function animationLoopCompleteCallback(event)
+{
+  switch(event.animationState.name) {
+    case animationTrigger.toaster.animations.tx_init:
+      arm.animation.play(animationTrigger.toaster.animations.tx_loop);
+      break;
+    case animationTrigger.toaster.animations.oracle_init:
+      arm.animation.play(animationTrigger.toaster.animations.oracle_loop);
+      break;
+    case animationTrigger.toaster.animations.eject_normal_toast:
+      arm.animation.play(animationTrigger.toaster.animations.discard_normal);
+      break;
+    case animationTrigger.toaster.animations.eject_burn_toast:
+      arm.animation.play(animationTrigger.toaster.animations.discard_burn);
+      break;
+    case animationTrigger.toaster.animations.discard_burn:
+      arm.animation.play(animationTrigger.toaster.animations.idle);
+      break;
+    case animationTrigger.toaster.animations.discard_normal:
+      arm.animation.play(animationTrigger.toaster.animations.idle);
+      break;
+  }
 }
 
 function onRoll(selection)
 {
   ui_text.text = "Waiting confirmation"
-  arm.animation.play(animationTrigger.toaster.animations.oracle_loop);
+  arm.animation.play(animationTrigger.toaster.animations.tx_init);
   roll("123", selection, current_amount, () => {
     ui_text.text = "Waiting oracle"
-    arm.animation.play("animtion1");
+    arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
       current_request_id = request_id
       console.log(current_request_id)
@@ -89,23 +116,29 @@ function poll() {
   if(current_request_id)
   {
     getGame(current_request_id, (game) => {
-      console.log("Bet amount:" + convertWeiToCrypto(game.bet_amount))
       if(game.result == Result.Pending)
         console.log("Pending...")
       else
+      {
         current_request_id = null
-        
-      if(game.result == Result.PlayerWon)
-      {
-        console.log("Player won")
-        ui_text.text = "Player won"
-        arm.animation.play("animtion0");
-      }
-      if(game.result == Result.PlayerLost)
-      {
-        console.log("Player lost")
-        ui_text.text = "Player lost"
-        arm.animation.play("animtion0");
+        if((game.selection == 0 && game.result == Result.PlayerWon)
+          || (game.selection == 1 && game.result == Result.PlayerLost))
+        {
+          arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast);
+        }else
+        {
+          arm.animation.play(animationTrigger.toaster.animations.eject_burn_toast);
+        }
+        if(game.result == Result.PlayerWon)
+        {
+          console.log("Player won")
+          ui_text.text = "Player won"
+        }
+        if(game.result == Result.PlayerLost)
+        {
+          console.log("Player lost")
+          ui_text.text = "Player lost"
+        }
       }
     });
   }

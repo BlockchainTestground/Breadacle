@@ -8,10 +8,10 @@ export default{
             tx_loop: 'wait-tx-loop',
             oracle_init: 'wait-oracle-init',
             oracle_loop: 'wait-oracle-loop',
-            eject_burn_toast: 'burn-toast',
             eject_normal_toast: 'normal-toast',
-            discard_burn: 'discard-burn-toast',
-            discard_normal: 'discard-normal-toast'
+            eject_burn_toast: 'burn-toast',
+            discard_normal: 'discard-normal-toast',
+            discard_burn: 'discard-burn-toast'
 
         },
     },
