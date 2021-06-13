@@ -36,10 +36,10 @@ var current_amount = "0.1"
 var amount_form_html
 var arm
 var arm2
+var steam_emitter
 
 function preload() {
-  this.load.image('a', './src/assets/a.png')
-  this.load.image('b', './src/assets/b.png')
+  this.load.image('steam', './src/assets/steam.png')
 
   this.load.dragonbone(
       animationTrigger.throne.name,
@@ -57,7 +57,6 @@ function preload() {
 }
 
 function create() {
-
   arm2 = this.add.armature("Armature", animationTrigger.throne.name);
   arm2.x = 400;
   arm2.y = 300;
@@ -71,6 +70,18 @@ function create() {
   arm.animation.play(animationTrigger.toaster.animations.idle);
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+
+
+  var steam_particles = this.add.particles('steam');
+  steam_emitter = steam_particles.createEmitter({
+      x: 400,
+      y: 300,
+      speed: 200,
+      scaleX: 0.5,
+      scaleY: 1,
+      gravityY: -200
+  });
+  steam_emitter.stop()
 }
 
 function animationLoopCompleteCallback(event)
@@ -81,6 +92,7 @@ function animationLoopCompleteCallback(event)
       break;
     case animationTrigger.toaster.animations.oracle_init:
       arm.animation.play(animationTrigger.toaster.animations.oracle_loop);
+      steam_emitter.start(false, 5000, 100)
       break;
     case animationTrigger.toaster.animations.eject_normal_toast:
       arm.animation.play(animationTrigger.toaster.animations.discard_normal);
@@ -121,6 +133,7 @@ function poll() {
       else
       {
         current_request_id = null
+        steam_emitter.stop()
         if((game.selection == 0 && game.result == Result.PlayerWon)
           || (game.selection == 1 && game.result == Result.PlayerLost))
         {
