@@ -6,6 +6,7 @@ var NETWORK_ID = 42 //Kovan
 var contract
 var accounts
 var balance
+var onConfirmClickCallback
 
 function onConnect()
 {
@@ -33,6 +34,10 @@ function disconnectWallet() {
   accounts = null
   balance = null
   onDisconnect()
+}
+
+function setConfirmTransactionCallback(confirmClickCallback) {
+  onConfirmClickCallback = confirmClickCallback
 }
 
 async function getAccounts() {
@@ -71,7 +76,21 @@ var roll = async function (userProvidedSeed, selection, amount, callback) {
   await contract.methods
     .roll(userProvidedSeed, selection)
     .send({ from: accounts[0], gas: 400000, value: convertCryptoToWei(amount) })
-    .catch((revertReason) => {
+    .on('transactionHash', function(hash){
+      console.log("transactionHash")
+      onConfirmClickCallback()
+    })
+    .on('receipt', function(receipt){
+      console.log("receipt")
+    })
+    .on('confirmation', function(confirmationNumber, receipt){
+      console.log("confirmation")
+    })
+    .on('error', function(error, receipt) {
+      console.log("error")
+      console.log(error)
+      console.log(receipt)
+    }).catch((revertReason) => {
       getRevertReason(revertReason.receipt.transactionHash);
     });
   callback()
@@ -108,4 +127,4 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance}
+export {roll, disconnectWallet, setConfirmTransactionCallback, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance}

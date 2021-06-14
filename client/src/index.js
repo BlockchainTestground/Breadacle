@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
-import { roll, disconnectWallet, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance } from "./blockchain/contract_interaction";
+import { roll, disconnectWallet, setConfirmTransactionCallback, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance } from "./blockchain/contract_interaction";
 import logoImg from "./assets/logo.png";
 import animationTrigger from './AnimationTriggers';
 const Result = {
@@ -71,6 +71,10 @@ function create() {
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
 
+  setConfirmTransactionCallback(() =>
+  {
+    arm.animation.play(animationTrigger.toaster.animations.tx_init)
+  })
 
   var steam_particles = this.add.particles('steam');
   steam_emitter = steam_particles.createEmitter({
@@ -112,7 +116,7 @@ function animationLoopCompleteCallback(event)
 function onRoll(selection)
 {
   ui_text.text = "Waiting confirmation"
-  arm.animation.play(animationTrigger.toaster.animations.tx_init);
+  arm.animation.play(animationTrigger.toaster.animations.set_bet);
   roll("123", selection, current_amount, () => {
     ui_text.text = "Waiting oracle"
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
@@ -192,3 +196,19 @@ window._disconnectWallet = _disconnectWallet;
 window.onAClicked = onAClicked;
 window.onBClicked = onBClicked;
 window.onBetAmountUpdate = onBetAmountUpdate;
+
+// Modal handlers
+var container = document.getElementById('container');
+var rules_modal_card = document.getElementById('rules_modal_card');
+var rules_button = document.getElementById('rules_button');
+
+container.addEventListener("click", function () {
+  document.getElementById('rules_modal').classList.remove('is-active')
+}, false);
+rules_modal_card.addEventListener("click", function (ev) {
+  ev.stopPropagation();
+}, false);
+rules_button.addEventListener("click", function (ev) {
+  document.getElementById('rules_modal').classList.add('is-active')
+  ev.stopPropagation();
+}, false);

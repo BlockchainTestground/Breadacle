@@ -12,11 +12,11 @@
       </style>
   </head>
   <body>
-    <div class="container">
+    <div id="container" class="container">
       <div id="navbar"></div>
       <div id="rules_modal" class="modal">
         <div class="modal-background"></div>
-        <div class="modal-card">
+        <div id="rules_modal_card" class="modal-card">
           <header class="modal-card-head">
             <p class="modal-card-title">Modal title</p>
             <button onclick="document.getElementById('rules_modal').classList.remove('is-active')" class="delete" aria-label="close"></button>
@@ -32,7 +32,7 @@
           <div id="phaser_canvas"></div>
         </div>
         <div class="column is-one-third-desktop">
-          <button class="button" onclick="document.getElementById('rules_modal').classList.add('is-active')">Rules</button>
+          <button id="rules_button" class="button">Rules</button>
           <button class="button" onclick="onAClicked()">A</button>
           <button class="button" onclick="onBClicked()">B</button>
           <input id="bet_amount" class="input" type="text" onkeyup="onBetAmountUpdate()" value="0.1">
