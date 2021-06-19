@@ -1,7 +1,6 @@
 import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
 import { roll, disconnectWallet, setConfirmTransactionCallback, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance } from "./blockchain/contract_interaction";
-import logoImg from "./assets/logo.png";
 import animationTrigger from './AnimationTriggers';
 const Result = {
   Pending: 0,
@@ -25,7 +24,12 @@ const config = {
   transparent: true,
   scene: {
     preload: preload,
-    create: create
+    create: create,
+    update: update
+  },
+  physics:{
+    default: 'arcade',
+    arcade: { debug: false }
   }
 };
 
@@ -37,9 +41,14 @@ var amount_form_html
 var arm
 var arm2
 var steam_emitter
+var coins_to_emit = 0
+var coins_emission_frequency = 5
+var coins = []
+var _this
 
 function preload() {
   this.load.image('steam', './src/assets/steam.png')
+  this.load.spritesheet('coin', './src/assets/coin.png', { frameWidth: 16, frameHeight: 16 });
 
   this.load.dragonbone(
       animationTrigger.throne.name,
@@ -57,6 +66,7 @@ function preload() {
 }
 
 function create() {
+  _this = this
   arm2 = this.add.armature("Armature", animationTrigger.throne.name);
   arm2.x = 400;
   arm2.y = 300;
@@ -86,6 +96,57 @@ function create() {
       gravityY: -200
   });
   steam_emitter.stop()
+
+  this.anims.create({
+    key: 'coin_animation',
+    frameRate: 7,
+    frames: _this.anims.generateFrameNumbers("coin", { start: 0, end: 11 }),
+    repeat: -1
+  });
+}
+
+function emitCoins(_coins_to_emit, _coins_emission_frequency)
+{
+  coins_to_emit = _coins_to_emit
+  coins_emission_frequency = _coins_emission_frequency
+}
+
+function update(time, delta) {
+  if(coins_to_emit > 0)
+  {
+    if(time % coins_emission_frequency)
+    {
+      emitCoin()
+    }
+    coins_to_emit -= 1
+  }
+
+  console.log(coins.length)
+  if(coins.length == 140)
+  {
+    coins[0].destroy()
+    coins.shift()
+  }
+}
+
+function emitCoin()
+{
+  var random_velocoty_x = Math.floor(Math.random() * 600)
+  var random_velocity_y = Math.floor(Math.random() * 600)
+
+  var random_x = 350 + Math.floor(Math.random() * 100)
+  var random_y = 350 + Math.floor(Math.random() * 100)
+
+  let sprite=_this.physics.add.sprite(random_x, random_y,"coin");
+
+  sprite.setVelocityX(random_velocoty_x);
+  sprite.setVelocityY(random_velocity_y);
+  sprite.setGravityX(-200 - random_velocoty_x);
+  sprite.setGravityY(-200 - random_velocity_y);
+
+  sprite.play('coin_animation');
+
+  coins.push(sprite)
 }
 
 function animationLoopCompleteCallback(event)
@@ -149,6 +210,7 @@ function poll() {
         if(game.result == Result.PlayerWon)
         {
           console.log("Player won")
+          emitCoins(100, 10)
           ui_text.text = "Player won"
         }
         if(game.result == Result.PlayerLost)
