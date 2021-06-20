@@ -1,6 +1,18 @@
 import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
-import { roll, disconnectWallet, setConfirmTransactionCallback, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance } from "./blockchain/contract_interaction";
+import { roll,
+  disconnectWallet,
+  setConfirmTransactionCallback,
+  getPlayerRequestId,
+  getContractBalance,
+  getLinkBalance,
+  getGame,
+  convertWeiToCrypto,
+  convertCryptoToWei,
+  getBalance,
+  getMaximumBet,
+  getMinimumBet
+} from "./blockchain/contract_interaction";
 import animationTrigger from './AnimationTriggers';
 const Result = {
   Pending: 0,

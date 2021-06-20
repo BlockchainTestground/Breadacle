@@ -15,6 +15,14 @@ function onConnect()
   document.getElementById("wallet-connected").style.display = "block"
 
   document.getElementById("logout-button").style.display = "block"
+
+  getMaximumBet((maximum_bet) => {
+    getMinimumBet((minimum_bet) => {
+      console.log("Max bet: " + maximum_bet)
+      console.log("Min bet: " + minimum_bet)
+      document.getElementById('modal_text').innerHTML = "The minimum bet is " + convertWeiToCrypto(minimum_bet) + " Matic and the maximum bet is " + convertWeiToCrypto(maximum_bet) + " Matic"
+    });
+  });
 }
 
 function onDisconnect() {
@@ -120,6 +128,18 @@ var getGame = async function (request_id, callback) {
   callback(result)
 }
 
+var getMaximumBet = async function (callback) {
+  var maximum_bet = await contract.methods
+    .maximum_bet().call()
+  callback(maximum_bet)
+}
+
+var getMinimumBet = async function (callback) {
+  var minimum_bet = await contract.methods
+    .minimum_bet().call()
+  callback(minimum_bet)
+}
+
 async function loadNavbar() {
   const contentDiv = document.getElementById("navbar");
   contentDiv.innerHTML = await (await fetch("./html/navbar.html")).text()
@@ -138,4 +158,4 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, setConfirmTransactionCallback, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance}
+export {roll, disconnectWallet, setConfirmTransactionCallback, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance, getMaximumBet, getMinimumBet}
