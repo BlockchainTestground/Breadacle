@@ -35,6 +35,7 @@ const config = {
 
 const game = new Phaser.Game(config);
 var ui_text
+var balance_text
 var current_request_id = null
 var current_amount = "0.1"
 var amount_form_html
@@ -80,6 +81,7 @@ function create() {
   arm.animation.play(animationTrigger.toaster.animations.idle);
 
   ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
+  balance_text = this.add.text(0, 50, 'Balance', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', color: "#000" });
 
   setConfirmTransactionCallback(() =>
   {
@@ -223,6 +225,7 @@ function poll() {
 
   getBalance((balance) => {
     document.getElementById('my-balance').innerHTML = convertWeiToCrypto(balance) + " Matic"
+    balance_text.text = Number(convertWeiToCrypto(balance)).toFixed(2) + " Matic"
   });
   /*
   getContractBalance((balance) => {
