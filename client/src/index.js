@@ -121,7 +121,6 @@ function update(time, delta) {
     coins_to_emit -= 1
   }
 
-  console.log(coins.length)
   if(coins.length == 140)
   {
     coins[0].destroy()
@@ -263,14 +262,3 @@ window.onBetAmountUpdate = onBetAmountUpdate;
 var container = document.getElementById('container');
 var rules_modal_card = document.getElementById('rules_modal_card');
 var rules_button = document.getElementById('rules_button');
-
-container.addEventListener("click", function () {
-  document.getElementById('rules_modal').classList.remove('is-active')
-}, false);
-rules_modal_card.addEventListener("click", function (ev) {
-  ev.stopPropagation();
-}, false);
-rules_button.addEventListener("click", function (ev) {
-  document.getElementById('rules_modal').classList.add('is-active')
-  ev.stopPropagation();
-}, false);

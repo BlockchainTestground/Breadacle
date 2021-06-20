@@ -123,6 +123,17 @@ var getGame = async function (request_id, callback) {
 async function loadNavbar() {
   const contentDiv = document.getElementById("navbar");
   contentDiv.innerHTML = await (await fetch("./html/navbar.html")).text()
+
+  container.addEventListener("click", function () {
+    document.getElementById('rules_modal').classList.remove('is-active')
+  }, false);
+  rules_modal_card.addEventListener("click", function (ev) {
+    ev.stopPropagation();
+  }, false);
+  rules_button.addEventListener("click", function (ev) {
+    document.getElementById('rules_modal').classList.add('is-active')
+    ev.stopPropagation();
+  }, false);
 }
 
 loadNavbar()
