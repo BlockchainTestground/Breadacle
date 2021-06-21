@@ -34,10 +34,15 @@
         </div>
         <div class="column is-one-third-desktop">
           <h1 class="title">Place your bet</h1>
+          <div class="field">
+            <label class="label">Bet (in Matic)</label>
+            <div class="control">
+              <input id="bet_amount" class="input" type="text" value="">
+              <a onclick="onMaxClicked()">Max</a>
+            </div>
+          </div>
           <button class="button" onclick="onAClicked()">Bet for a bland bread</button>
           <button class="button" onclick="onBClicked()">Bet for a burned bread</button>
-          <input id="bet_amount" class="input" type="text" onkeyup="onBetAmountUpdate()" value="0">
-          <a onclick="onMaxClicked()">Max</a>
         </div>
       </div>
     </div>

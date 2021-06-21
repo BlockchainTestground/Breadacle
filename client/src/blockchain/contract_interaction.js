@@ -74,9 +74,9 @@ async function initContractInteraction() {
 
 initContractInteraction()
 
-var roll = async function (userProvidedSeed, selection, amount, callback) {
+var roll = async function (selection, amount, callback) {
   await contract.methods
-    .roll(userProvidedSeed, selection)
+    .roll(selection)
     .send({ from: accounts[0], gas: 400000, value: convertCryptoToWei(amount) })
     .on('transactionHash', function(hash){
       console.log("transactionHash")

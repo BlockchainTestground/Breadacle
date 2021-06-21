@@ -187,7 +187,7 @@ function onRoll(selection)
 {
   document.getElementById('status').innerHTML = "Waiting confirmation"
   arm.animation.play(animationTrigger.toaster.animations.set_bet);
-  roll("123", selection, document.getElementById('bet_amount').value, () => {
+  roll(selection, document.getElementById('bet_amount').value, () => {
     document.getElementById('status').innerHTML = "Waiting for oracle"
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
@@ -261,15 +261,10 @@ function onMaxClicked() {
   document.getElementById('bet_amount').value = convertWeiToCrypto(getMaximumBet())
 }
 
-function onBetAmountUpdate() {
-  document.getElementById('bet_amount').value
-}
-
 window._disconnectWallet = _disconnectWallet;
 window.onAClicked = onAClicked;
 window.onBClicked = onBClicked;
 window.onMaxClicked = onMaxClicked;
-window.onBetAmountUpdate = onBetAmountUpdate;
 
 // Modal handlers
 var container = document.getElementById('container');
