@@ -46,11 +46,8 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
-var ui_text
 var balance_text
 var current_request_id = null
-var current_amount = "0.1"
-var amount_form_html
 var arm
 var arm2
 var steam_emitter
@@ -92,7 +89,6 @@ function create() {
   arm.y = 375;
   arm.animation.play(animationTrigger.toaster.animations.idle);
 
-  ui_text = this.add.text(0, 50, '', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif' });
   balance_text = this.add.text(0, 50, 'Balance', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', color: "#000" });
 
   setConfirmTransactionCallback(() =>
@@ -189,10 +185,10 @@ function animationLoopCompleteCallback(event)
 
 function onRoll(selection)
 {
-  ui_text.text = "Waiting confirmation"
+  document.getElementById('status').innerHTML = "Waiting confirmation"
   arm.animation.play(animationTrigger.toaster.animations.set_bet);
-  roll("123", selection, current_amount, () => {
-    ui_text.text = "Waiting oracle"
+  roll("123", selection, document.getElementById('bet_amount').value, () => {
+    document.getElementById('status').innerHTML = "Waiting for oracle"
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
       current_request_id = request_id
@@ -222,14 +218,12 @@ function poll() {
         }
         if(game.result == Result.PlayerWon)
         {
-          console.log("Player won")
           emitCoins(100, 10)
-          ui_text.text = "Player won"
+          document.getElementById('status').innerHTML = "You won!"
         }
         if(game.result == Result.PlayerLost)
         {
-          console.log("Player lost")
-          ui_text.text = "Player lost"
+          document.getElementById('status').innerHTML = "You lost"
         }
       }
     });
@@ -264,11 +258,11 @@ function onBClicked() {
 }
 
 function onMaxClicked() {
-  current_amount = document.getElementById('bet_amount').value = convertWeiToCrypto(getMaximumBet())
+  document.getElementById('bet_amount').value = convertWeiToCrypto(getMaximumBet())
 }
 
 function onBetAmountUpdate() {
-  current_amount = document.getElementById('bet_amount').value
+  document.getElementById('bet_amount').value
 }
 
 window._disconnectWallet = _disconnectWallet;
