@@ -264,6 +264,10 @@ function onBClicked() {
   onRoll("1")
 }
 
+function onMaxClicked() {
+  current_amount = document.getElementById('bet_amount').value = convertWeiToCrypto(getMaximumBet())
+}
+
 function onBetAmountUpdate() {
   current_amount = document.getElementById('bet_amount').value
 }
@@ -271,6 +275,7 @@ function onBetAmountUpdate() {
 window._disconnectWallet = _disconnectWallet;
 window.onAClicked = onAClicked;
 window.onBClicked = onBClicked;
+window.onMaxClicked = onMaxClicked;
 window.onBetAmountUpdate = onBetAmountUpdate;
 
 // Modal handlers

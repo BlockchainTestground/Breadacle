@@ -7,23 +7,8 @@ var contract
 var accounts
 var balance
 var onConfirmClickCallback
-
-function onConnect()
-{
-  document.getElementById("my-address").innerHTML = accounts[0].substring(0, 6) + "..." + accounts[0].substring(accounts[0].length-4, accounts[0].length)
-  document.getElementById("wallet-disconnected").style.display = "none"
-  document.getElementById("wallet-connected").style.display = "block"
-
-  document.getElementById("logout-button").style.display = "block"
-
-  getMaximumBet((maximum_bet) => {
-    getMinimumBet((minimum_bet) => {
-      console.log("Max bet: " + maximum_bet)
-      console.log("Min bet: " + minimum_bet)
-      document.getElementById('modal_text').innerHTML = "The minimum bet is " + convertWeiToCrypto(minimum_bet) + " Matic and the maximum bet is " + convertWeiToCrypto(maximum_bet) + " Matic"
-    });
-  });
-}
+var maximum_bet
+var minimum_bet
 
 function onDisconnect() {
   document.getElementById("wallet-disconnected").style.display = "block"
@@ -48,9 +33,17 @@ function setConfirmTransactionCallback(confirmClickCallback) {
   onConfirmClickCallback = confirmClickCallback
 }
 
-async function getAccounts() {
+async function onConnect() {
   accounts = await web3.eth.getAccounts()
-  onConnect()
+  maximum_bet = await contract.methods.maximum_bet().call()
+  minimum_bet = await contract.methods.minimum_bet().call()
+
+  document.getElementById("my-address").innerHTML = accounts[0].substring(0, 6) + "..." + accounts[0].substring(accounts[0].length-4, accounts[0].length)
+  document.getElementById("wallet-disconnected").style.display = "none"
+  document.getElementById("wallet-connected").style.display = "block"
+
+  document.getElementById("logout-button").style.display = "block"
+  document.getElementById('modal_text').innerHTML = "The minimum bet is " + convertWeiToCrypto(minimum_bet) + " Matic and the maximum bet is " + convertWeiToCrypto(maximum_bet) + " Matic"
 }
 
 async function initContractInteraction() {
@@ -62,7 +55,7 @@ async function initContractInteraction() {
         var awaitContract = async function () {
           contract = await getContract(web3);
           var awaitAccounts = async function () {
-            getAccounts()
+            onConnect()
           };
           awaitAccounts();
         };
@@ -128,16 +121,12 @@ var getGame = async function (request_id, callback) {
   callback(result)
 }
 
-var getMaximumBet = async function (callback) {
-  var maximum_bet = await contract.methods
-    .maximum_bet().call()
-  callback(maximum_bet)
+function getMaximumBet() {
+  return maximum_bet
 }
 
-var getMinimumBet = async function (callback) {
-  var minimum_bet = await contract.methods
-    .minimum_bet().call()
-  callback(minimum_bet)
+function getMinimumBet() {
+  return minimum_bet
 }
 
 async function loadNavbar() {
@@ -158,4 +147,17 @@ async function loadNavbar() {
 
 loadNavbar()
 
-export {roll, disconnectWallet, setConfirmTransactionCallback, getPlayerRequestId, getContractBalance, getLinkBalance, getGame, convertWeiToCrypto, convertCryptoToWei, getBalance, getMaximumBet, getMinimumBet}
+export {
+  roll,
+  disconnectWallet,
+  setConfirmTransactionCallback,
+  getPlayerRequestId,
+  getContractBalance,
+  getLinkBalance,
+  getGame,
+  convertWeiToCrypto,
+  convertCryptoToWei,
+  getBalance,
+  getMaximumBet,
+  getMinimumBet
+}
