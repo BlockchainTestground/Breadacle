@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.4;
+pragma solidity 0.8.5;
 
 import "./dependencies/VRFConsumerBase.sol";
 
@@ -21,7 +21,7 @@ import "./dependencies/VRFConsumerBase.sol";
 contract DiceGame is VRFConsumerBase {
   address owner;
   uint256 public bet_percentage_fee = 1000;// 10.00%
-  uint256 public minimum_bet = 0;
+  uint256 public minimum_bet = 0.01 ether;
   uint256 public maximum_bet = 100 ether;
   
   enum Result { Pending, PlayerWon, PlayerLost }
@@ -56,14 +56,14 @@ contract DiceGame is VRFConsumerBase {
     owner = msg.sender;
   }
 
-  function roll(uint256 userProvidedSeed, uint256 selection) public payable returns (bytes32 _requestId)
+  function roll(uint256 selection) public payable returns (bytes32 _requestId)
   {
     require(LINK.balanceOf(address(this)) > fee, "Not enough LINK - fill contract with faucet");
     require(msg.value <= address(this).balance, "Not enough matic liquidity on the contract");
     require(msg.value >= minimum_bet, "Bet must be above minimum");
     require(msg.value <= maximum_bet, "Bet must be below maximum");
 
-    bytes32 requestId = requestRandomness(keyHash, fee, userProvidedSeed);
+    bytes32 requestId = requestRandomness(keyHash, fee);
 
     games[requestId].player = msg.sender;
     games[requestId].bet_amount = msg.value;
@@ -71,11 +71,6 @@ contract DiceGame is VRFConsumerBase {
     player_request_id[msg.sender] = requestId;
 
     return requestId;
-  }
-
-  function getRandomNumber(uint256 userProvidedSeed) public returns (bytes32 requestId) {
-    require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
-    return requestRandomness(keyHash, fee, userProvidedSeed);
   }
 
   function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override
