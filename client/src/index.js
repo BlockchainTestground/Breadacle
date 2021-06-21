@@ -236,7 +236,6 @@ function poll() {
   }
 
   getBalance((balance) => {
-    document.getElementById('my-balance').innerHTML = convertWeiToCrypto(balance) + " Matic"
     balance_text.text = Number(convertWeiToCrypto(balance)).toFixed(2) + " Matic"
   });
   /*

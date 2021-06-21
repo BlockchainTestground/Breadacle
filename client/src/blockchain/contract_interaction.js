@@ -44,6 +44,7 @@ async function onConnect() {
 
   document.getElementById("logout-button").style.display = "block"
   document.getElementById('modal_text').innerHTML = "The minimum bet is " + convertWeiToCrypto(minimum_bet) + " Matic and the maximum bet is " + convertWeiToCrypto(maximum_bet) + " Matic"
+  document.getElementById('bet_amount').value = convertWeiToCrypto(getMinimumBet())
 }
 
 async function initContractInteraction() {
