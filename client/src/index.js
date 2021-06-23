@@ -275,10 +275,15 @@ function onMaxClicked() {
   document.getElementById('bet_amount').value = convertWeiToCrypto(getMaximumBet())
 }
 
+function onMinClicked() {
+  document.getElementById('bet_amount').value = convertWeiToCrypto(getMinimumBet())
+}
+
 window._disconnectWallet = _disconnectWallet;
 window.onAClicked = onAClicked;
 window.onBClicked = onBClicked;
 window.onMaxClicked = onMaxClicked;
+window.onMinClicked = onMinClicked;
 
 // Modal handlers
 var container = document.getElementById('container');
