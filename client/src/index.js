@@ -23,8 +23,8 @@ const Result = {
 const config = {
   type: Phaser.AUTO,
   parent: "phaser_canvas",
-  width: 600,
-  height: 600,
+  width: 1080,
+  height: 1080,
   dom: {
     createContainer: true
   },
