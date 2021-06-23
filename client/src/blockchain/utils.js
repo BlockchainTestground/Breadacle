@@ -54,6 +54,7 @@ async function getRevertReason(txHash) {
       throw Error("unlikely to happen");
     })
     .catch((revertReason) => {
+      console.log(revertReason)
       var str = "" + revertReason;
       var json_reason = JSON.parse(str.substring(str.indexOf("{")));
       handleRevertError(json_reason.message);
@@ -89,23 +90,4 @@ const convertCryptoToWei = (crypto) => {
   return web3.utils.toWei(crypto, "ether");
 };
 
-const showRetrieveExpiredFunds = (option, accounts) => {
-  const expiry = new Date(option.expiry * 1000);
-  return option.writer === accounts[0] &&
-    !option.exercised &&
-    !option.canceled &&
-    expiry > Date.now()
-    ? ""
-    : "none";
-};
-
-const showExcercise = (option, accounts) => {
-  const expiry = new Date(option.expiry * 1000);
-  return option.buyer === accounts[0] &&
-    !option.exercised &&
-    expiry > Date.now()
-    ? ""
-    : "none";
-};
-
-export { getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei }
+export { getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei, getRevertReason }

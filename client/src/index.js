@@ -183,12 +183,26 @@ function animationLoopCompleteCallback(event)
   }
 }
 
+function setStatusText(text, is_error)
+{
+  document.getElementById('status').innerHTML = text
+  if(is_error)
+    document.getElementById("status").style.color = "#FF0000";
+  else
+    document.getElementById("status").style.color = "#000000";
+}
+
 function onRoll(selection)
 {
-  document.getElementById('status').innerHTML = "Waiting confirmation"
+  setStatusText("Waiting confirmation", false)
   arm.animation.play(animationTrigger.toaster.animations.set_bet);
-  roll(selection, document.getElementById('bet_amount').value, () => {
-    document.getElementById('status').innerHTML = "Waiting for oracle"
+  roll(selection, document.getElementById('bet_amount').value, (success) => {
+    if(!success)
+    {
+      setStatusText("Error: Transaction reverted", true)
+      return
+    }
+    setStatusText("Waiting for oracle", false)
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
       current_request_id = request_id
@@ -219,11 +233,11 @@ function poll() {
         if(game.result == Result.PlayerWon)
         {
           emitCoins(100, 10)
-          document.getElementById('status').innerHTML = "You won!"
+          setStatusText("You won!", false)
         }
         if(game.result == Result.PlayerLost)
         {
-          document.getElementById('status').innerHTML = "You lost"
+          setStatusText("You lost", false)
         }
       }
     });

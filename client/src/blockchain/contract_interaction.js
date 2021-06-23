@@ -1,4 +1,4 @@
-import {getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei} from './utils.js';
+import {getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei, getRevertReason} from './utils.js';
 
 var NETWORK_ID = 42 //Kovan
 //var NETWORK_ID = 80001 //Mumbai
@@ -84,18 +84,19 @@ var roll = async function (selection, amount, callback) {
     })
     .on('receipt', function(receipt){
       console.log("receipt")
+      callback(true)
     })
     .on('confirmation', function(confirmationNumber, receipt){
       console.log("confirmation")
     })
     .on('error', function(error, receipt) {
       console.log("error")
-      console.log(error)
-      console.log(receipt)
+      callback(false)
+      //getRevertReason(receipt.transactionHash);
+      //document.getElementById('status').innerHTML = "Error: Transaction reverted"
     }).catch((revertReason) => {
-      getRevertReason(revertReason.receipt.transactionHash);
+      //getRevertReason(revertReason.receipt.transactionHash);
     });
-  callback()
 }
 
 var getPlayerRequestId = async function (callback) {
