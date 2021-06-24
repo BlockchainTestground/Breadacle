@@ -58,6 +58,7 @@ var _this
 
 function preload() {
   this.load.image('steam', './src/assets/steam.png')
+  this.load.image('token_holder', './src/assets/token_holder.png')
   this.load.spritesheet('coin', './src/assets/coin.png', { frameWidth: 16, frameHeight: 16 });
 
   this.load.dragonbone(
@@ -77,6 +78,14 @@ function preload() {
 
 function create() {
   _this = this
+  
+  this.add.image(
+    25 + this.textures.get("token_holder").getSourceImage().width/2,
+    25 + this.textures.get("token_holder").getSourceImage().height/2,
+    'token_holder');
+
+  balance_text = this.add.text(90, 45, 'Loading balance', { fontFamily: 'Arial, sans-serif', color: "#fff" });
+
   arm2 = this.add.armature("Armature", animationTrigger.throne.name);
   arm2.x = 400;
   arm2.y = 300;
@@ -88,8 +97,6 @@ function create() {
   arm.x = 400;
   arm.y = 375;
   arm.animation.play(animationTrigger.toaster.animations.idle);
-
-  balance_text = this.add.text(0, 50, 'Balance', { fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif', color: "#000" });
 
   setConfirmTransactionCallback(() =>
   {
