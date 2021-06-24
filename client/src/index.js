@@ -20,11 +20,14 @@ const Result = {
   PlayerLost: 2
 }
 
+var CANVAS_WIDTH = 1080
+var CANVAS_HEIGHT = 1080
+
 const config = {
   type: Phaser.AUTO,
   parent: "phaser_canvas",
-  width: 1080,
-  height: 1080,
+  width: CANVAS_WIDTH,
+  height: CANVAS_HEIGHT,
   dom: {
     createContainer: true
   },
@@ -57,6 +60,18 @@ var coins = []
 var _this
 
 function preload() {
+
+  var loading_text = this.make.text({
+    x: CANVAS_WIDTH/4,
+    y: CANVAS_HEIGHT/4,
+    text: 'Loading...',
+    style: {
+        font: '40px monospace',
+        fill: '#000'
+    }
+  });
+  loading_text.setOrigin(0.5, 0.5);
+
   this.load.image('steam', './src/assets/steam.png')
   this.load.image('token_holder', './src/assets/token_holder.png')
   this.load.spritesheet('coin', './src/assets/coin.png', { frameWidth: 16, frameHeight: 16 });
@@ -73,7 +88,12 @@ function preload() {
     "src/assets/DragonBonesFiles/OracleToaster/Toaster_tex.png",
     "src/assets/DragonBonesFiles/OracleToaster/Toaster_tex.json",
     "src/assets/DragonBonesFiles/OracleToaster/Toaster_ske.json",
-);
+  );
+
+  this.load.on('complete', function () {
+    loading_text.visible = false
+    console.log("phaser preload complete")
+  });
 }
 
 function create() {
