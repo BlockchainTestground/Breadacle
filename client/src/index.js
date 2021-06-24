@@ -201,15 +201,15 @@ function setStatusText(text, is_error)
 
 function onRoll(selection)
 {
-  setStatusText("Waiting confirmation", false)
+  setStatusText("Waiting confirmation...", false)
   arm.animation.play(animationTrigger.toaster.animations.set_bet);
   roll(selection, document.getElementById('bet_amount').value, (success) => {
     if(!success)
     {
-      setStatusText("Error: Transaction reverted", true)
+      setStatusText("Error: Could not complete transaction", true)
       return
     }
-    setStatusText("Waiting for oracle", false)
+    setStatusText("Waiting for oracle...", false)
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
       current_request_id = request_id
