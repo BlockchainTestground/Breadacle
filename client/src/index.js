@@ -53,10 +53,13 @@ var balance_text
 var current_request_id = null
 var arm
 var arm2
-var steam_emitter
 var coins_to_emit = 0
-var coins_emission_frequency = 5
+var coin_emission_frequency = 5
 var coins = []
+var is_steam_active = false
+var steam_emission_frequency = 4
+var max_concurrent_steam = 20
+var steams = []
 var _this
 
 function preload() {
@@ -122,18 +125,6 @@ function create() {
   {
     arm.animation.play(animationTrigger.toaster.animations.tx_init)
   })
-
-  var steam_particles = this.add.particles('steam');
-  steam_emitter = steam_particles.createEmitter({
-      x: 400,
-      y: 300,
-      speed: 200,
-      scaleX: 0.5,
-      scaleY: 1,
-      gravityY: -200
-  });
-  steam_emitter.stop()
-
   this.anims.create({
     key: 'coin_animation',
     frameRate: 7,
@@ -142,16 +133,16 @@ function create() {
   });
 }
 
-function emitCoins(_coins_to_emit, _coins_emission_frequency)
+function emitCoins(_coins_to_emit, _coin_emission_frequency)
 {
   coins_to_emit = _coins_to_emit
-  coins_emission_frequency = _coins_emission_frequency
+  coin_emission_frequency = _coin_emission_frequency
 }
 
 function update(time, delta) {
   if(coins_to_emit > 0)
   {
-    if(time % coins_emission_frequency)
+    if(time % coin_emission_frequency == 0)
     {
       emitCoin()
     }
@@ -162,6 +153,17 @@ function update(time, delta) {
   {
     coins[0].destroy()
     coins.shift()
+  }
+
+  if(is_steam_active && parseInt(time) % steam_emission_frequency == 0)
+  {
+    emitSteam()
+  }
+
+  if(steams.length == max_concurrent_steam)
+  {
+    steams[0].destroy()
+    steams.shift()
   }
 }
 
@@ -185,6 +187,22 @@ function emitCoin()
   coins.push(sprite)
 }
 
+function emitSteam()
+{
+  var random_velocity_y = Math.floor(Math.random() * 50)
+
+  var random_x = 350 + Math.floor(Math.random() * 100)
+
+  let sprite=_this.physics.add.sprite(random_x, 300,"steam");
+
+  sprite.setVelocityX(0);
+  sprite.setVelocityY(-random_velocity_y);
+  sprite.setGravityX(0);
+  sprite.setGravityY(-200 - random_velocity_y);
+
+  steams.push(sprite)
+}
+
 function animationLoopCompleteCallback(event)
 {
   switch(event.animationState.name) {
@@ -193,7 +211,7 @@ function animationLoopCompleteCallback(event)
       break;
     case animationTrigger.toaster.animations.oracle_init:
       arm.animation.play(animationTrigger.toaster.animations.oracle_loop);
-      steam_emitter.start(false, 5000, 100)
+      is_steam_active = true
       break;
     case animationTrigger.toaster.animations.eject_normal_toast:
       arm.animation.play(animationTrigger.toaster.animations.discard_normal);
@@ -248,7 +266,7 @@ function poll() {
       else
       {
         current_request_id = null
-        steam_emitter.stop()
+        is_steam_active = false
         if((game.selection == 0 && game.result == Result.PlayerWon)
           || (game.selection == 1 && game.result == Result.PlayerLost))
         {
