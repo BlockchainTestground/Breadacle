@@ -21,8 +21,8 @@ import "./dependencies/VRFConsumerBase.sol";
 contract DiceGame is VRFConsumerBase {
   address owner;
   uint256 public bet_percentage_fee = 1000;// 10.00%
-  uint256 public minimum_bet = 0.01 ether;
-  uint256 public maximum_bet = 100 ether;
+  uint256 public minimum_bet = 5 ether;
+  uint256 public maximum_bet = 50 ether;
   
   enum Result { Pending, PlayerWon, PlayerLost }
   struct Game {

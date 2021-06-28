@@ -9,6 +9,7 @@ var balance
 var onConfirmClickCallback
 var maximum_bet
 var minimum_bet
+var bet_percentage_fee
 
 function onDisconnect() {
   document.getElementById("wallet-disconnected").style.display = "block"
@@ -37,13 +38,18 @@ async function onConnect() {
   accounts = await web3.eth.getAccounts()
   maximum_bet = await contract.methods.maximum_bet().call()
   minimum_bet = await contract.methods.minimum_bet().call()
+  bet_percentage_fee = await contract.methods.bet_percentage_fee().call()
 
   document.getElementById("my-address").innerHTML = accounts[0].substring(0, 6) + "..." + accounts[0].substring(accounts[0].length-4, accounts[0].length)
   document.getElementById("wallet-disconnected").style.display = "none"
   document.getElementById("wallet-connected").style.display = "block"
 
   document.getElementById("logout-button").style.display = "block"
-  document.getElementById('modal_text').innerHTML = "The minimum bet is " + convertWeiToCrypto(minimum_bet) + " Matic and the maximum bet is " + convertWeiToCrypto(maximum_bet) + " Matic"
+  document.getElementById('modal_text').innerHTML =
+    "The minimum bet is " + convertWeiToCrypto(minimum_bet) +
+    " Matic and the maximum bet is " +
+    convertWeiToCrypto(maximum_bet) + " Matic. " +
+    (bet_percentage_fee/100) + "% the prize goes to oracles fees and development team."
   document.getElementById('bet_amount').value = convertWeiToCrypto(getMinimumBet())
 }
 
@@ -131,6 +137,10 @@ function getMinimumBet() {
   return minimum_bet
 }
 
+function getBetPercentageFee() {
+  return bet_percentage_fee
+}
+
 async function loadNavbar() {
   const contentDiv = document.getElementById("navbar");
   contentDiv.innerHTML = await (await fetch("./html/navbar.html")).text()
@@ -161,5 +171,6 @@ export {
   convertCryptoToWei,
   getBalance,
   getMaximumBet,
-  getMinimumBet
+  getMinimumBet,
+  getBetPercentageFee
 }
