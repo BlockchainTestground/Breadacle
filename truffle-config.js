@@ -55,11 +55,12 @@ module.exports = {
       networkCheckTimeout: 9999,
     },
     matic: {
-      provider: () => new HDWalletProvider(mnemonic, `https://rpc-mainnet.maticvigil.com`),
+      provider: () => new HDWalletProvider(mnemonic, `wss://matic-mainnet-full-ws.bwarelabs.com`),
       network_id: 137,
       confirmations: 2,
       timeoutBlocks: 200,
-      skipDryRun: true
+      skipDryRun: true,
+      networkCheckTimeout: 99999,
     },
     kovan: {
       provider: function() {

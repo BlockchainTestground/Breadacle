@@ -1,8 +1,8 @@
 import {getWeb3, getContract, convertWeiToCrypto, convertCryptoToWei, getRevertReason} from './utils.js';
 
-var NETWORK_ID = 42 //Kovan
+var NETWORK_ID = 137 //Matic
+var TESTNET_ID = 42  //Kovan
 //var NETWORK_ID = 80001 //Mumbai
-//const NETWORK_ID = 137 //Matic
 var contract
 var accounts
 var balance
@@ -57,7 +57,7 @@ async function initContractInteraction() {
   var awaitWeb3 = async function () {
     web3 = await getWeb3();
     web3.eth.net.getId((err, netId) => {
-      if (netId == NETWORK_ID) {
+      if (netId == NETWORK_ID || netId == TESTNET_ID) {
         document.getElementById("loading-web3").style.display = "none";
         var awaitContract = async function () {
           contract = await getContract(web3);

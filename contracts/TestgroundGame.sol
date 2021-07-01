@@ -17,6 +17,13 @@ import "./dependencies/VRFConsumerBase.sol";
   * Key Hash: 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4
   * Fee: 0.0001
   */
+/**
+  * Network: Matic
+  * Chainlink VRF Coordinator address: 0x8C7382F9D8f56b33781fE506E897a4F1e2d17255
+  * LINK token address:                0x326C977E6efc84E512bB9C30f76E30c160eD06FB
+  * Key Hash: 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4
+  * Fee: 0.0001
+  */
 
 contract DiceGame is VRFConsumerBase {
   address owner;
@@ -40,8 +47,8 @@ contract DiceGame is VRFConsumerBase {
   );
 
   // Chainlink internal setup
-  bytes32 internal keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4;
-  uint256 internal fee = 0.1 * 10 ** 18;
+  bytes32 internal keyHash = 0x6e75b569a01ef56d18cab6a8e71e6600d6ce853834d4a5748b720d06f878b3a4;
+  uint256 internal fee = 0.0001 * 10 ** 18;
 
   // Random handlers
   mapping(bytes32 => Game) public games;
@@ -50,8 +57,8 @@ contract DiceGame is VRFConsumerBase {
   constructor()
   public
   VRFConsumerBase(
-    0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9 /* VRF Coordinator */,
-    0xa36085F69e2889c224210F603D836748e7dC0088 /* Link Mumbai Token Contract */)
+    0x8C7382F9D8f56b33781fE506E897a4F1e2d17255 /* VRF Coordinator */,
+    0x326C977E6efc84E512bB9C30f76E30c160eD06FB /* Link Mumbai Token Contract */)
   {
     owner = msg.sender;
   }
