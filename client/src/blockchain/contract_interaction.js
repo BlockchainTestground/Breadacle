@@ -16,7 +16,7 @@ function onDisconnect() {
   document.getElementById("wallet-connected").style.display = "none"
   document.getElementById("wallet-connected").style.display = "none"
   
-  document.getElementById("logout-button").style.display = "none"
+  //document.getElementById("logout-button").style.display = "none"
 }
 
 var getBalance = async function (callback) {
@@ -44,7 +44,7 @@ async function onConnect() {
   document.getElementById("wallet-disconnected").style.display = "none"
   document.getElementById("wallet-connected").style.display = "block"
 
-  document.getElementById("logout-button").style.display = "block"
+  //document.getElementById("logout-button").style.display = "block"
   document.getElementById('modal_text').innerHTML =
     "The minimum bet is " + convertWeiToCrypto(minimum_bet) +
     " Matic and the maximum bet is " +
@@ -155,6 +155,54 @@ async function loadNavbar() {
     document.getElementById('rules_modal').classList.add('is-active')
     ev.stopPropagation();
   }, false);
+
+  // Dropdowns in navbar
+  var $dropdowns = getAll('.navbar-item.has-dropdown:not(.is-hoverable)');
+
+  if ($dropdowns.length > 0) {
+    $dropdowns.forEach(function ($el) {
+      $el.addEventListener('click', function (event) {
+        event.stopPropagation();
+        $el.classList.toggle('is-active');
+      });
+    });
+
+    document.addEventListener('click', function (event) {
+      closeDropdowns();
+    });
+  }
+
+  function closeDropdowns() {
+    $dropdowns.forEach(function ($el) {
+      $el.classList.remove('is-active');
+    });
+  }
+
+  // Close dropdowns if ESC pressed
+  document.addEventListener('keydown', function (event) {
+    var e = event || window.event;
+    if (e.keyCode === 27) {
+      closeDropdowns();
+    }
+  });
+
+  // Toggles
+  var $burgers = getAll('.burger');
+  if ($burgers.length > 0) {
+    $burgers.forEach(function ($el) {
+      $el.addEventListener('click', function () {
+        var target = $el.dataset.target;
+        var $target = document.getElementById(target);
+        $el.classList.toggle('is-active');
+        $target.classList.toggle('is-active');
+      });
+    });
+  }
+
+  // Functions
+  function getAll(selector) {
+    return Array.prototype.slice.call(document.querySelectorAll(selector), 0);
+  }
 }
 
 loadNavbar()
