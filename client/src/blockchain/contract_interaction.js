@@ -16,7 +16,7 @@ function onDisconnect() {
   document.getElementById("wallet-connected").style.display = "none"
   document.getElementById("wallet-connected").style.display = "none"
   
-  document.getElementById("logout-button").style.display = "none"
+  //document.getElementById("logout-button").style.display = "none"
 }
 
 var getBalance = async function (callback) {
@@ -44,7 +44,7 @@ async function onConnect() {
   document.getElementById("wallet-disconnected").style.display = "none"
   document.getElementById("wallet-connected").style.display = "block"
 
-  document.getElementById("logout-button").style.display = "block"
+  //document.getElementById("logout-button").style.display = "block"
   document.getElementById('modal_text').innerHTML =
     "The minimum bet is " + convertWeiToCrypto(minimum_bet) +
     " Matic and the maximum bet is " +
