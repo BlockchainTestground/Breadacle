@@ -55,9 +55,11 @@ var arm
 var arm2
 var coins_to_emit = 0
 var coin_emission_frequency = 5
+var last_coin_emission_time = 0
 var coins = []
 var is_steam_active = false
-var steam_emission_frequency = 4
+var steam_emission_frequency = 70
+var last_steam_emission_time = 0
 var max_concurrent_steam = 20
 var steams = []
 var _this
@@ -131,6 +133,13 @@ function create() {
     frames: _this.anims.generateFrameNumbers("coin", { start: 0, end: 11 }),
     repeat: -1
   });
+
+  this.anims.create({
+    key: 'coin_animation_one_time',
+    frameRate: 50,
+    frames: _this.anims.generateFrameNumbers("coin", { start: 0, end: 11 }),
+    repeat: false
+  });
 }
 
 function emitCoins(_coins_to_emit, _coin_emission_frequency)
@@ -142,21 +151,31 @@ function emitCoins(_coins_to_emit, _coin_emission_frequency)
 function update(time, delta) {
   if(coins_to_emit > 0)
   {
-    if(time % coin_emission_frequency == 0)
+    if(time - last_coin_emission_time > coin_emission_frequency)
     {
+      last_coin_emission_time = time
       emitCoin()
+      coins_to_emit -= 1
     }
-    coins_to_emit -= 1
+  }
+
+  for(var i=0; i<coins.length; i++)
+  {
+    if(coins[i].x < 110
+      || coins[i].y < 110)
+    {
+      destroyCoin(0)
+    }
   }
 
   if(coins.length == 140)
   {
-    coins[0].destroy()
-    coins.shift()
+    destroyCoin(0)
   }
 
-  if(is_steam_active && parseInt(time) % steam_emission_frequency == 0)
+  if(is_steam_active && time - last_steam_emission_time > steam_emission_frequency)
   {
+    last_steam_emission_time = time
     emitSteam()
   }
 
@@ -167,6 +186,18 @@ function update(time, delta) {
   }
 }
 
+function destroyCoin(coin_index)
+{
+  let sprite = _this.physics.add.sprite(coins[coin_index].x, coins[coin_index].y,"coin");
+  sprite.play('coin_animation_one_time');
+  sprite.on('animationcomplete', function (x) {
+    sprite.visible = false
+  });
+
+  coins[coin_index].destroy()
+  coins.shift()
+}
+
 function emitCoin()
 {
   var random_velocoty_x = Math.floor(Math.random() * 600)
@@ -175,7 +206,7 @@ function emitCoin()
   var random_x = 350 + Math.floor(Math.random() * 100)
   var random_y = 350 + Math.floor(Math.random() * 100)
 
-  let sprite=_this.physics.add.sprite(random_x, random_y,"coin");
+  let sprite = _this.physics.add.sprite(random_x, random_y,"coin");
 
   sprite.setVelocityX(random_velocoty_x);
   sprite.setVelocityY(random_velocity_y);
