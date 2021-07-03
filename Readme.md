@@ -24,7 +24,7 @@ truffle migrate --network matic
 
 # Current Deployment
 
-Currently deployed on kovan at `0x0b92DffE8b74787b02301AF5610f5091d241eDD5` and Polygon Matic at `0xf430d25e207D931a6e3dFA68184c92a09Dc536Fa`. ABI is located at `current_deployment/TestgroundGame.json`.
+Currently deployed on kovan at `0x01D19516E0cFFC39C033dD9273428eaC98D21A56` and Polygon Matic at `0xf430d25e207D931a6e3dFA68184c92a09Dc536Fa`. ABI is located at `current_deployment/TestgroundGame.json`.
 
 # Related contracts and documentation
 

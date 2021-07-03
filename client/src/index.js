@@ -64,6 +64,11 @@ var max_concurrent_steam = 20
 var steams = []
 var _this
 
+// Audio
+var place_bet
+var wating_confirmation
+var wating_oracle
+
 function preload() {
 
   var loading_text = this.make.text({
@@ -80,6 +85,10 @@ function preload() {
   this.load.image('steam', './src/assets/steam.png')
   this.load.image('token_holder', './src/assets/token_holder.png')
   this.load.spritesheet('coin', './src/assets/coin.png', { frameWidth: 16, frameHeight: 16 });
+
+  this.load.audio("place_bet", ["./src/assets/audio/place_bet.wav"]);
+  this.load.audio("wating_confirmation", ["./src/assets/audio/wating_confirmation.wav"]);
+  this.load.audio("wating_oracle", ["./src/assets/audio/wating_oracle.wav"]);
 
   this.load.dragonbone(
       animationTrigger.throne.name,
@@ -103,6 +112,8 @@ function preload() {
 
 function create() {
   _this = this
+
+  this.sound.pauseOnBlur = false;
   
   this.add.image(
     25 + this.textures.get("token_holder").getSourceImage().width/2,
@@ -125,6 +136,7 @@ function create() {
 
   setConfirmTransactionCallback(() =>
   {
+    wating_confirmation.play()
     arm.animation.play(animationTrigger.toaster.animations.tx_init)
   })
   this.anims.create({
@@ -140,6 +152,10 @@ function create() {
     frames: _this.anims.generateFrameNumbers("coin", { start: 0, end: 11 }),
     repeat: false
   });
+
+  place_bet = this.sound.add("place_bet", { loop: false });
+  wating_confirmation = this.sound.add("wating_confirmation", { loop: false });
+  wating_oracle = this.sound.add("wating_oracle", { loop: false });
 }
 
 function emitCoins(_coins_to_emit, _coin_emission_frequency)
@@ -270,6 +286,7 @@ function setStatusText(text, is_error)
 
 function onRoll(selection)
 {
+  place_bet.play()
   setStatusText("Waiting confirmation...", false)
   arm.animation.play(animationTrigger.toaster.animations.set_bet);
   roll(selection, document.getElementById('bet_amount').value, (success) => {
@@ -278,6 +295,7 @@ function onRoll(selection)
       setStatusText("Error: Could not complete transaction", true)
       return
     }
+    wating_oracle.play()
     setStatusText("Waiting for oracle...", false)
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
