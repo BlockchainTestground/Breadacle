@@ -86,7 +86,7 @@ function preload() {
 
   this.load.image('steam', './src/assets/steam.png')
   this.load.image('token_holder', './src/assets/token_holder.png')
-  this.load.spritesheet('coin', './src/assets/coin.png', { frameWidth: 16, frameHeight: 16 });
+  this.load.spritesheet('coin', './src/assets/bread_coin_resized.png', { frameWidth: 37, frameHeight: 45 });
 
   this.load.audio("place_bet", ["./src/assets/audio/place_bet.wav"]);
   this.load.audio("wating_confirmation", ["./src/assets/audio/wating_confirmation.wav"]);
@@ -209,7 +209,7 @@ function destroyCoin(coin_index)
   let sprite = _this.physics.add.sprite(coins[coin_index].x, coins[coin_index].y,"coin");
   sprite.play('coin_animation_one_time');
   sprite.on('animationcomplete', function (x) {
-    sprite.visible = false
+    sprite.destroy()
   });
 
   coins[coin_index].destroy()
@@ -331,7 +331,7 @@ function poll() {
         if((game.selection == 0 && game.result == Result.PlayerWon)
           || (game.selection == 1 && game.result == Result.PlayerLost))
         {
-          arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast)
+          arm.animatCoinion.play(animationTrigger.toaster.animations.eject_normal_toast)
           normal_toast_just_ejected = true
           burn_toast_just_ejected = false
         }else
@@ -374,7 +374,8 @@ function _disconnectWallet() {
 }
 
 function onAClicked() {
-  onRoll("0")
+  emitCoins(100, 10)
+  //onRoll("0")
 }
 
 function onBClicked() {
