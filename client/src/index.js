@@ -63,6 +63,13 @@ var last_steam_emission_time = 0
 var max_concurrent_steam = 20
 var steams = []
 var _this
+var normal_toast_just_ejected = false
+var burn_toast_just_ejected = false
+
+// Audio
+var place_bet
+var wating_confirmation
+var wating_oracle
 
 function preload() {
 
@@ -79,7 +86,11 @@ function preload() {
 
   this.load.image('steam', './src/assets/steam.png')
   this.load.image('token_holder', './src/assets/token_holder.png')
-  this.load.spritesheet('coin', './src/assets/coin.png', { frameWidth: 16, frameHeight: 16 });
+  this.load.spritesheet('coin', './src/assets/bread_coin_resized.png', { frameWidth: 37, frameHeight: 45 });
+
+  this.load.audio("place_bet", ["./src/assets/audio/place_bet.wav"]);
+  this.load.audio("wating_confirmation", ["./src/assets/audio/wating_confirmation.wav"]);
+  this.load.audio("wating_oracle", ["./src/assets/audio/wating_oracle.wav"]);
 
   this.load.dragonbone(
       animationTrigger.throne.name,
@@ -103,6 +114,8 @@ function preload() {
 
 function create() {
   _this = this
+
+  this.sound.pauseOnBlur = false;
   
   this.add.image(
     25 + this.textures.get("token_holder").getSourceImage().width/2,
@@ -125,6 +138,7 @@ function create() {
 
   setConfirmTransactionCallback(() =>
   {
+    wating_confirmation.play()
     arm.animation.play(animationTrigger.toaster.animations.tx_init)
   })
   this.anims.create({
@@ -140,6 +154,10 @@ function create() {
     frames: _this.anims.generateFrameNumbers("coin", { start: 0, end: 11 }),
     repeat: false
   });
+
+  place_bet = this.sound.add("place_bet", { loop: false });
+  wating_confirmation = this.sound.add("wating_confirmation", { loop: false });
+  wating_oracle = this.sound.add("wating_oracle", { loop: false });
 }
 
 function emitCoins(_coins_to_emit, _coin_emission_frequency)
@@ -191,7 +209,7 @@ function destroyCoin(coin_index)
   let sprite = _this.physics.add.sprite(coins[coin_index].x, coins[coin_index].y,"coin");
   sprite.play('coin_animation_one_time');
   sprite.on('animationcomplete', function (x) {
-    sprite.visible = false
+    sprite.destroy()
   });
 
   coins[coin_index].destroy()
@@ -237,6 +255,9 @@ function emitSteam()
 function animationLoopCompleteCallback(event)
 {
   switch(event.animationState.name) {
+    case animationTrigger.toaster.animations.set_bet:
+      arm.animation.play(animationTrigger.toaster.animations.set_bet_loop);
+      break;
     case animationTrigger.toaster.animations.tx_init:
       arm.animation.play(animationTrigger.toaster.animations.tx_loop);
       break;
@@ -245,16 +266,16 @@ function animationLoopCompleteCallback(event)
       is_steam_active = true
       break;
     case animationTrigger.toaster.animations.eject_normal_toast:
-      arm.animation.play(animationTrigger.toaster.animations.discard_normal);
+      arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast_loop);
       break;
     case animationTrigger.toaster.animations.eject_burn_toast:
-      arm.animation.play(animationTrigger.toaster.animations.discard_burn);
-      break;
-    case animationTrigger.toaster.animations.discard_burn:
-      arm.animation.play(animationTrigger.toaster.animations.idle);
+      arm.animation.play(animationTrigger.toaster.animations.eject_burn_toast_loop);
       break;
     case animationTrigger.toaster.animations.discard_normal:
-      arm.animation.play(animationTrigger.toaster.animations.idle);
+      arm.animation.play(animationTrigger.toaster.animations.set_bet);
+      break;
+    case animationTrigger.toaster.animations.discard_burn:
+      arm.animation.play(animationTrigger.toaster.animations.set_bet);
       break;
   }
 }
@@ -270,14 +291,23 @@ function setStatusText(text, is_error)
 
 function onRoll(selection)
 {
+  place_bet.play()
   setStatusText("Waiting confirmation...", false)
-  arm.animation.play(animationTrigger.toaster.animations.set_bet);
+  
+  if(normal_toast_just_ejected)
+    arm.animation.play(animationTrigger.toaster.animations.discard_normal)
+  else if(burn_toast_just_ejected)
+    arm.animation.play(animationTrigger.toaster.animations.discard_burn)
+  else
+    arm.animation.play(animationTrigger.toaster.animations.set_bet)
+  
   roll(selection, document.getElementById('bet_amount').value, (success) => {
     if(!success)
     {
       setStatusText("Error: Could not complete transaction", true)
       return
     }
+    wating_oracle.play()
     setStatusText("Waiting for oracle...", false)
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
@@ -301,10 +331,14 @@ function poll() {
         if((game.selection == 0 && game.result == Result.PlayerWon)
           || (game.selection == 1 && game.result == Result.PlayerLost))
         {
-          arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast);
+          arm.animatCoinion.play(animationTrigger.toaster.animations.eject_normal_toast)
+          normal_toast_just_ejected = true
+          burn_toast_just_ejected = false
         }else
         {
-          arm.animation.play(animationTrigger.toaster.animations.eject_burn_toast);
+          arm.animation.play(animationTrigger.toaster.animations.eject_burn_toast)
+          burn_toast_just_ejected = true
+          normal_toast_just_ejected = false
         }
         if(game.result == Result.PlayerWon)
         {
@@ -340,7 +374,8 @@ function _disconnectWallet() {
 }
 
 function onAClicked() {
-  onRoll("0")
+  emitCoins(100, 10)
+  //onRoll("0")
 }
 
 function onBClicked() {

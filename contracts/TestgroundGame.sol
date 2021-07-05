@@ -28,7 +28,7 @@ import "./dependencies/VRFConsumerBase.sol";
 contract DiceGame is VRFConsumerBase {
   address owner;
   uint256 public bet_percentage_fee = 1000;// 10.00%
-  uint256 public minimum_bet = 5 ether;
+  uint256 public minimum_bet = 0.01 ether;
   uint256 public maximum_bet = 50 ether;
   
   enum Result { Pending, PlayerWon, PlayerLost }
@@ -47,8 +47,8 @@ contract DiceGame is VRFConsumerBase {
   );
 
   // Chainlink internal setup
-  bytes32 internal keyHash = 0xf86195cf7690c55907b2b611ebb7343a6f649bff128701cc542f0569e2c549da;
-  uint256 internal fee = 0.0001 * 10 ** 18;
+  bytes32 internal keyHash = 0x6c3699283bda56ad74f6b855546325b68d482e983852a7a82979cc4807b641f4;
+  uint256 internal fee = 0.1 * 10 ** 18;
 
   // Random handlers
   mapping(bytes32 => Game) public games;
@@ -57,8 +57,8 @@ contract DiceGame is VRFConsumerBase {
   constructor()
   public
   VRFConsumerBase(
-    0x3d2341ADb2D31f1c5530cDC622016af293177AE0 /* VRF Coordinator */,
-    0xb0897686c545045aFc77CF20eC7A532E3120E0F1 /* Link Contract */)
+    0xdD3782915140c8f3b190B5D67eAc6dc5760C46E9 /* VRF Coordinator */,
+    0xa36085F69e2889c224210F603D836748e7dC0088 /* Link Contract */)
   {
     owner = msg.sender;
   }
