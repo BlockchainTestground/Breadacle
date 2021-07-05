@@ -331,7 +331,7 @@ function poll() {
         if((game.selection == 0 && game.result == Result.PlayerWon)
           || (game.selection == 1 && game.result == Result.PlayerLost))
         {
-          arm.animatCoinion.play(animationTrigger.toaster.animations.eject_normal_toast)
+          arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast)
           normal_toast_just_ejected = true
           burn_toast_just_ejected = false
         }else
