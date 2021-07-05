@@ -63,6 +63,8 @@ var last_steam_emission_time = 0
 var max_concurrent_steam = 20
 var steams = []
 var _this
+var normal_toast_just_ejected = false
+var burn_toast_just_ejected = false
 
 // Audio
 var place_bet
@@ -253,6 +255,9 @@ function emitSteam()
 function animationLoopCompleteCallback(event)
 {
   switch(event.animationState.name) {
+    case animationTrigger.toaster.animations.set_bet:
+      arm.animation.play(animationTrigger.toaster.animations.set_bet_loop);
+      break;
     case animationTrigger.toaster.animations.tx_init:
       arm.animation.play(animationTrigger.toaster.animations.tx_loop);
       break;
@@ -261,16 +266,16 @@ function animationLoopCompleteCallback(event)
       is_steam_active = true
       break;
     case animationTrigger.toaster.animations.eject_normal_toast:
-      arm.animation.play(animationTrigger.toaster.animations.discard_normal);
+      arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast_loop);
       break;
     case animationTrigger.toaster.animations.eject_burn_toast:
-      arm.animation.play(animationTrigger.toaster.animations.discard_burn);
-      break;
-    case animationTrigger.toaster.animations.discard_burn:
-      arm.animation.play(animationTrigger.toaster.animations.idle);
+      arm.animation.play(animationTrigger.toaster.animations.eject_burn_toast_loop);
       break;
     case animationTrigger.toaster.animations.discard_normal:
-      arm.animation.play(animationTrigger.toaster.animations.idle);
+      arm.animation.play(animationTrigger.toaster.animations.set_bet);
+      break;
+    case animationTrigger.toaster.animations.discard_burn:
+      arm.animation.play(animationTrigger.toaster.animations.set_bet);
       break;
   }
 }
@@ -288,7 +293,14 @@ function onRoll(selection)
 {
   place_bet.play()
   setStatusText("Waiting confirmation...", false)
-  arm.animation.play(animationTrigger.toaster.animations.set_bet);
+  
+  if(normal_toast_just_ejected)
+    arm.animation.play(animationTrigger.toaster.animations.discard_normal)
+  else if(burn_toast_just_ejected)
+    arm.animation.play(animationTrigger.toaster.animations.discard_burn)
+  else
+    arm.animation.play(animationTrigger.toaster.animations.set_bet)
+  
   roll(selection, document.getElementById('bet_amount').value, (success) => {
     if(!success)
     {
@@ -319,10 +331,14 @@ function poll() {
         if((game.selection == 0 && game.result == Result.PlayerWon)
           || (game.selection == 1 && game.result == Result.PlayerLost))
         {
-          arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast);
+          arm.animation.play(animationTrigger.toaster.animations.eject_normal_toast)
+          normal_toast_just_ejected = true
+          burn_toast_just_ejected = false
         }else
         {
-          arm.animation.play(animationTrigger.toaster.animations.eject_burn_toast);
+          arm.animation.play(animationTrigger.toaster.animations.eject_burn_toast)
+          burn_toast_just_ejected = true
+          normal_toast_just_ejected = false
         }
         if(game.result == Result.PlayerWon)
         {
