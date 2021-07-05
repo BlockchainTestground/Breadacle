@@ -374,8 +374,7 @@ function _disconnectWallet() {
 }
 
 function onAClicked() {
-  emitCoins(100, 10)
-  //onRoll("0")
+  onRoll("0")
 }
 
 function onBClicked() {
