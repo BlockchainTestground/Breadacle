@@ -371,7 +371,7 @@ function poll() {
   */
 }
 
-var display_click_count_poller = setInterval(poll,500)
+var display_click_count_poller = setInterval(poll,1000)
 
 function _disconnectWallet() {
   disconnectWallet()
