@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import dragonBones from "./external/dragonBones";
 import { roll,
+  isConnected,
   disconnectWallet,
   setConfirmTransactionCallback,
   getPlayerRequestId,
@@ -353,9 +354,12 @@ function poll() {
     });
   }
 
-  getBalance((balance) => {
-    balance_text.text = Number(convertWeiToCrypto(balance)).toFixed(2) + " Matic"
-  });
+  if(isConnected())
+  {
+    getBalance((balance) => {
+      balance_text.text = Number(convertWeiToCrypto(balance)).toFixed(2) + " Matic"
+    });
+  }
   /*
   getContractBalance((balance) => {
     console.log("Contract balance: " + balance)
@@ -367,7 +371,7 @@ function poll() {
   */
 }
 
-var display_click_count_poller = setInterval(poll,500)
+var display_click_count_poller = setInterval(poll,1000)
 
 function _disconnectWallet() {
   disconnectWallet()

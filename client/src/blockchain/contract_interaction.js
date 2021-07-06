@@ -11,6 +11,11 @@ var maximum_bet
 var minimum_bet
 var bet_percentage_fee
 
+function isConnected()
+{
+  return accounts != null
+}
+
 function onDisconnect() {
   document.getElementById("wallet-disconnected").style.display = "block"
   document.getElementById("wallet-connected").style.display = "none"
@@ -208,6 +213,7 @@ async function loadNavbar() {
 loadNavbar()
 
 export {
+  isConnected,
   roll,
   disconnectWallet,
   setConfirmTransactionCallback,

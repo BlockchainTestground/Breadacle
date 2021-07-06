@@ -2,6 +2,18 @@ import Web3 from "./web3.js";
 
 var SMART_CONTRACT_ABI_PATH = "./contracts/DiceGame.json"
 
+function metamaskReloadCallback()
+{
+  window.ethereum.on('accountsChanged', (accounts) => {
+    console.log("Accounts changed, realoading...")
+    window.location.reload()
+  })
+  window.ethereum.on('networkChanged', (accounts) => {
+    console.log("Network changed, realoading...")
+    window.location.reload()
+  })
+}
+
 const getWeb3 = async () => {
   return new Promise((resolve, reject) => {
     console.log(document.readyState)
@@ -9,6 +21,7 @@ const getWeb3 = async () => {
     {
       if (window.ethereum) {
         const web3 = new Web3(window.ethereum);
+        metamaskReloadCallback()
         try {
           // ask user permission to access his accounts
           (async function(){
@@ -24,6 +37,7 @@ const getWeb3 = async () => {
     }else
     {
       window.addEventListener("load", async () => {
+        metamaskReloadCallback()
         if (window.ethereum) {
           const web3 = new Web3(window.ethereum);
           try {
