@@ -51,6 +51,7 @@ const config = {
 
 const game = new Phaser.Game(config);
 var balance_text
+var game_result_text
 var current_request_id = null
 var arm
 var arm2
@@ -159,6 +160,18 @@ function create() {
   place_bet = this.sound.add("place_bet", { loop: false });
   wating_confirmation = this.sound.add("wating_confirmation", { loop: false });
   wating_oracle = this.sound.add("wating_oracle", { loop: false });
+
+  game_result_text = this.make.text({
+    x: CANVAS_WIDTH/4 + 150,
+    y: CANVAS_HEIGHT/4,
+    text: '',
+    style: {
+        font: '40px monospace',
+        fill: '#222'
+    }
+  });
+  game_result_text.setOrigin(0.5, 0.5);
+  game_result_text.setShadow(3, 3, 'rgba(1,1,1,0.5)', 5);
 }
 
 function emitCoins(_coins_to_emit, _coin_emission_frequency)
@@ -293,6 +306,7 @@ function setStatusText(text, is_error)
 function onRoll(selection)
 {
   place_bet.play()
+  game_result_text.text = ""
   setStatusText("Waiting confirmation...", false)
   
   if(normal_toast_just_ejected)
@@ -345,10 +359,12 @@ function poll() {
         {
           emitCoins(100, 10)
           setStatusText("You won!", false)
+          game_result_text.text = "Congratulations! You won!"
         }
         if(game.result == Result.PlayerLost)
         {
           setStatusText("You lost", false)
+          game_result_text.text = "Better luck next time"
         }
       }
     });
