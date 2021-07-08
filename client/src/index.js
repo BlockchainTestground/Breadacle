@@ -307,6 +307,7 @@ function onRoll(selection)
 {
   place_bet.play()
   game_result_text.text = ""
+  document.getElementById("waiting_tx_loader").style.display = "block"
   setStatusText("Waiting confirmation...", false)
   
   if(normal_toast_just_ejected)
@@ -319,10 +320,14 @@ function onRoll(selection)
   roll(selection, document.getElementById('bet_amount').value, (success) => {
     if(!success)
     {
+      document.getElementById("waiting_tx_loader").style.display = "none"
+      document.getElementById("waiting_oracle_loader").style.display = "none"
       setStatusText("Error: Could not complete transaction", true)
       return
     }
     wating_oracle.play()
+    document.getElementById("waiting_tx_loader").style.display = "none"
+    document.getElementById("waiting_oracle_loader").style.display = "block"
     setStatusText("Waiting for oracle...", false)
     arm.animation.play(animationTrigger.toaster.animations.oracle_init);
     getPlayerRequestId((request_id) => {
@@ -358,11 +363,15 @@ function poll() {
         if(game.result == Result.PlayerWon)
         {
           emitCoins(100, 10)
+          document.getElementById("waiting_tx_loader").style.display = "none"
+          document.getElementById("waiting_oracle_loader").style.display = "none"
           setStatusText("You won!", false)
           game_result_text.text = "Congratulations! You won!"
         }
         if(game.result == Result.PlayerLost)
         {
+          document.getElementById("waiting_tx_loader").style.display = "none"
+          document.getElementById("waiting_oracle_loader").style.display = "none"
           setStatusText("You lost", false)
           game_result_text.text = "Better luck next time"
         }

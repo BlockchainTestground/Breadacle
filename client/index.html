@@ -18,8 +18,8 @@
   <body>
     <div id="container" class="container">
       <div id="navbar"></div>
-      <h2 class="title is-4 is-size-5-touch has-text-centered">Provably-fair guess game</h2>
-      <h3 class="subtitle is-5 is-size-6-touch has-text-centered">Earn Matic by using Chainlink's verifiable random numbers on Polygon's low gas chain</h3>
+      <h2 class="title is-4 is-size-5-touch has-text-centered">Provably-fair guess game (Beta)</h2>
+      <h3 class="subtitle is-5 is-size-6-touch has-text-centered">Earn Matic by using Chainlink's verifiable random numbers and Polygon's low gas fees</h3>
       <div id="rules_modal" class="modal">
         <div class="modal-background"></div>
         <div id="rules_modal_card" class="modal-card">
@@ -45,6 +45,8 @@
               <div class="content">
                 <h1 class="title is-size-1-touch">Place your bet</h1>
                 <p class="is-size-2-touch" id="status"></p>
+                <progress id="waiting_tx_loader" style="display:none" class="progress is-small is-primary" max="100">15%</progress>
+                <progress id="waiting_oracle_loader" style="display:none" class="progress is-small is-info" max="100">15%</progress>
                 <div class="field">
                   <label class="label is-size-4-touch">Bet (in Matic)</label>
                   <div class="control">
