@@ -51,7 +51,6 @@ const config = {
 
 const game = new Phaser.Game(config);
 var balance_text
-var game_result_text
 var current_request_id = null
 var arm
 var arm2
@@ -67,11 +66,15 @@ var steams = []
 var _this
 var normal_toast_just_ejected = false
 var burn_toast_just_ejected = false
+var you_win_image
+var you_lost_image
 
 // Audio
 var place_bet
 var wating_confirmation
 var wating_oracle
+var you_win_sound
+var you_lose_sound
 
 function preload() {
 
@@ -88,11 +91,15 @@ function preload() {
 
   this.load.image('steam', './src/assets/steam.png')
   this.load.image('token_holder', './src/assets/token_holder.png')
+  this.load.image('you_win', './src/assets/you_win.png')
+  this.load.image('you_lost', './src/assets/you_lost.png')
   this.load.spritesheet('coin', './src/assets/bread_coin_resized.png', { frameWidth: 37, frameHeight: 45 });
 
   this.load.audio("place_bet", ["./src/assets/audio/place_bet.wav"]);
   this.load.audio("wating_confirmation", ["./src/assets/audio/wating_confirmation.wav"]);
   this.load.audio("wating_oracle", ["./src/assets/audio/wating_oracle.wav"]);
+  this.load.audio("you_win", ["./src/assets/audio/you_win.mp3"]);
+  this.load.audio("you_lose", ["./src/assets/audio/you_lose.wav"]);
 
   this.load.dragonbone(
       animationTrigger.throne.name,
@@ -122,7 +129,7 @@ function create() {
   this.add.image(
     25 + this.textures.get("token_holder").getSourceImage().width/2,
     25 + this.textures.get("token_holder").getSourceImage().height/2,
-    'token_holder');
+    'token_holder')
 
   balance_text = this.add.text(90, 45, 'Loading balance', { fontFamily: 'Arial, sans-serif', color: "#fff" });
 
@@ -160,18 +167,20 @@ function create() {
   place_bet = this.sound.add("place_bet", { loop: false });
   wating_confirmation = this.sound.add("wating_confirmation", { loop: false });
   wating_oracle = this.sound.add("wating_oracle", { loop: false });
+  you_win_sound = this.sound.add("you_win", { loop: false });
+  you_lose_sound = this.sound.add("you_lose", { loop: false });
 
-  game_result_text = this.make.text({
-    x: CANVAS_WIDTH/4 + 150,
-    y: CANVAS_HEIGHT/4,
-    text: '',
-    style: {
-        font: '40px monospace',
-        fill: '#222'
-    }
-  });
-  game_result_text.setOrigin(0.5, 0.5);
-  game_result_text.setShadow(3, 3, 'rgba(1,1,1,0.5)', 5);
+  you_win_image = this.add.image(
+    400,
+    100,
+    'you_win')
+  you_win_image.visible = false
+  
+  you_lost_image = this.add.image(
+    400,
+    100,
+    'you_lost')
+  you_lost_image.visible = false
 }
 
 function emitCoins(_coins_to_emit, _coin_emission_frequency)
@@ -306,7 +315,8 @@ function setStatusText(text, is_error)
 function onRoll(selection)
 {
   place_bet.play()
-  game_result_text.text = ""
+  you_win_image.visible = false
+  you_lost_image.visible = false
   document.getElementById("waiting_tx_loader").style.display = "block"
   setStatusText("Waiting confirmation...", false)
   
@@ -366,14 +376,18 @@ function poll() {
           document.getElementById("waiting_tx_loader").style.display = "none"
           document.getElementById("waiting_oracle_loader").style.display = "none"
           setStatusText("You won!", false)
-          game_result_text.text = "Congratulations! You won!"
+          you_win_sound.play()
+          you_win_image.visible = true
+          you_lost_image.visible = false
         }
         if(game.result == Result.PlayerLost)
         {
           document.getElementById("waiting_tx_loader").style.display = "none"
           document.getElementById("waiting_oracle_loader").style.display = "none"
           setStatusText("You lost", false)
-          game_result_text.text = "Better luck next time"
+          you_lost_sound.play()
+          you_win_image.visible = false
+          you_lost_image.visible = true
         }
       }
     });
@@ -382,7 +396,7 @@ function poll() {
   if(isConnected())
   {
     getBalance((balance) => {
-      balance_text.text = Number(convertWeiToCrypto(balance)).toFixed(2) + " Matic"
+      balance_text.text = Number(convertWeiToCrypto(balance)).toFixed(3) + " Matic"
     });
   }
   /*
