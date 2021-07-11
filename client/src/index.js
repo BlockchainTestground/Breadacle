@@ -67,7 +67,7 @@ var _this
 var normal_toast_just_ejected = false
 var burn_toast_just_ejected = false
 var you_win_image
-var you_lost_image
+var you_lose_image
 
 // Audio
 var place_bet
@@ -92,7 +92,7 @@ function preload() {
   this.load.image('steam', './src/assets/steam.png')
   this.load.image('token_holder', './src/assets/token_holder.png')
   this.load.image('you_win', './src/assets/you_win.png')
-  this.load.image('you_lost', './src/assets/you_lost.png')
+  this.load.image('you_lose', './src/assets/you_lose.png')
   this.load.spritesheet('coin', './src/assets/bread_coin_resized.png', { frameWidth: 37, frameHeight: 45 });
 
   this.load.audio("place_bet", ["./src/assets/audio/place_bet.wav"]);
@@ -176,11 +176,11 @@ function create() {
     'you_win')
   you_win_image.visible = false
   
-  you_lost_image = this.add.image(
+  you_lose_image = this.add.image(
     400,
     100,
-    'you_lost')
-  you_lost_image.visible = false
+    'you_lose')
+  you_lose_image.visible = false
 }
 
 function emitCoins(_coins_to_emit, _coin_emission_frequency)
@@ -316,7 +316,7 @@ function onRoll(selection)
 {
   place_bet.play()
   you_win_image.visible = false
-  you_lost_image.visible = false
+  you_lose_image.visible = false
   document.getElementById("waiting_tx_loader").style.display = "block"
   setStatusText("Waiting confirmation...", false)
   
@@ -378,16 +378,16 @@ function poll() {
           setStatusText("You won!", false)
           you_win_sound.play()
           you_win_image.visible = true
-          you_lost_image.visible = false
+          you_lose_image.visible = false
         }
         if(game.result == Result.PlayerLost)
         {
           document.getElementById("waiting_tx_loader").style.display = "none"
           document.getElementById("waiting_oracle_loader").style.display = "none"
           setStatusText("You lost", false)
-          you_lost_sound.play()
+          you_lose_sound.play()
           you_win_image.visible = false
-          you_lost_image.visible = true
+          you_lose_image.visible = true
         }
       }
     });
